@@ -1,0 +1,2292 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIM-BK: E-Portofolio Karier & Peminatan Siswa Terpadu</title>
+  <meta name="description" content="Sistem Informasi Bimbingan Konseling (SIM-BK) untuk E-Portofolio Karier, Asesmen Minat Holland RIASEC, Brankas Prestasi, dan Konsultasi Peminatan Siswa.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            serif: ['Cinzel', 'serif']
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+              950: '#172554'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons via CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Styling khusus antarmuka & print preview */
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Radio button pill styling */
+    .option-pill input:checked + label {
+      border-color: #2563eb;
+      background-color: #eff6ff;
+      color: #1d4ed8;
+      font-weight: 600;
+      box-shadow: 0 1px 2px 0 rgba(37, 99, 235, 0.1);
+    }
+
+    /* @media print formatting - Menjamin 1 lembar rapi dokumen dinas */
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        font-size: 11pt !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* Sembunyikan elemen non-cetak */
+      .no-print, nav, header, #toast-container, .tab-nav-container, footer, .action-buttons, button {
+        display: none !important;
+      }
+
+      /* Tampilkan hanya tab resume saat print */
+      .tab-content {
+        display: none !important;
+      }
+      #tab-resume {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .print-document-sheet {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        background: transparent !important;
+      }
+
+      .page-break {
+        page-break-after: always;
+      }
+
+      /* Optimasi chart untuk print */
+      canvas {
+        max-width: 220px !important;
+        max-height: 220px !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased text-slate-800">
+
+  <!-- TOP HEADER / NAV BAR -->
+  <header class="no-print sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo & Title -->
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-700 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+            <i data-lucide="compass" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-extrabold text-lg tracking-tight text-slate-900">SIM-BK</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-semibold border border-blue-200">v2.5 Terpadu</span>
+            </div>
+            <p class="text-xs text-slate-500 hidden sm:block">E-Portofolio Karier & Peminatan Siswa Berbasis Holland RIASEC</p>
+          </div>
+        </div>
+
+        <!-- Quick Top Actions -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <button id="btn-demo-data" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 transition-all cursor-pointer">
+            <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-600"></i>
+            <span class="hidden md:inline">Isi Data Demo</span>
+            <span class="md:hidden">Demo</span>
+          </button>
+
+          <button id="btn-save-all" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-all cursor-pointer">
+            <i data-lucide="save" class="w-3.5 h-3.5"></i>
+            <span>Simpan</span>
+          </button>
+
+          <button id="btn-export-file" type="button" title="Unduh File HTML Tunggal (Siap Dibagikan)" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-all cursor-pointer">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Ekspor HTML</span>
+          </button>
+
+          <button id="btn-print-top" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-all cursor-pointer">
+            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">Cetak Resume</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MAIN NAVIGATION TABS -->
+    <div class="bg-slate-50 border-t border-slate-200 overflow-x-auto">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="flex space-x-1 sm:space-x-2 py-1.5 text-sm font-medium" aria-label="Tabs" id="main-tabs">
+          <button data-tab="tab-dashboard" class="tab-btn active-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-blue-700 bg-white shadow-xs border border-blue-200/60 font-semibold cursor-pointer">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span>1. Data Siswa & Dashboard</span>
+          </button>
+          <button data-tab="tab-riasec" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer">
+            <i data-lucide="pie-chart" class="w-4 h-4"></i>
+            <span>2. Asesmen Minat RIASEC (18 Butir)</span>
+          </button>
+          <button data-tab="tab-portofolio" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer">
+            <i data-lucide="award" class="w-4 h-4"></i>
+            <span>3. Brankas Prestasi</span>
+            <span id="badge-portofolio-count" class="ml-1 px-1.5 py-0.5 text-[10px] rounded-full bg-slate-200 text-slate-700">0</span>
+          </button>
+          <button data-tab="tab-konsultasi" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer">
+            <i data-lucide="user-check" class="w-4 h-4"></i>
+            <span>4. Rekomendasi Guru BK</span>
+          </button>
+          <button data-tab="tab-resume" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer">
+            <i data-lucide="file-text" class="w-4 h-4"></i>
+            <span>5. Resume Siap Cetak (PDF)</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+    <!-- ========================================== -->
+    <!-- TAB 1: DASHBOARD RINGKASAN & DATA SISWA -->
+    <!-- ========================================== -->
+    <div id="tab-dashboard" class="tab-content block space-y-6">
+      
+      <!-- Welcome Banner -->
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white p-6 sm:p-8 shadow-xl">
+        <div class="relative z-10 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-semibold mb-3">
+            <i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i>
+            Bimbingan Karier & Peminatan Terpadu
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Selamat Datang di Portal E-Portofolio Siswa</h1>
+          <p class="mt-2 text-sm sm:text-base text-slate-300 leading-relaxed">
+            Platform konseling digital terpadu untuk memetakan tipe minat kepribadian karier (Holland RIASEC), merekam rekam jejak prestasi, dan merumuskan rekomendasi peminatan studi lanjut bersama Konselor BK.
+          </p>
+          <div class="mt-4 flex flex-wrap gap-3">
+            <button onclick="switchTab('tab-riasec')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-medium text-sm transition shadow-md shadow-blue-500/30 cursor-pointer">
+              <i data-lucide="play-circle" class="w-4 h-4"></i> Mulai Asesmen 18 Butir
+            </button>
+            <button onclick="switchTab('tab-resume')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-sm border border-white/20 transition cursor-pointer">
+              <i data-lucide="file-check-2" class="w-4 h-4"></i> Pratinjau Portofolio Cetak
+            </button>
+          </div>
+        </div>
+        <!-- Decorative Circle Background -->
+        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+      </div>
+
+      <!-- Quick Stats Metrics -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+            <i data-lucide="dna" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 font-medium">Holland Code</p>
+            <p id="stat-holland-code" class="text-lg font-bold text-slate-900 tracking-wide">-</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+            <i data-lucide="award" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 font-medium">Prestasi Tercatat</p>
+            <p id="stat-portfolio-count" class="text-lg font-bold text-slate-900">0 Berkas</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center">
+            <i data-lucide="trending-up" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 font-medium">Rata-rata Rapor</p>
+            <p id="stat-gpa" class="text-lg font-bold text-slate-900">0.00</p>
+          </div>
+        </div>
+
+        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <p class="text-xs text-slate-500 font-medium">Status BK</p>
+            <p id="stat-bk-status" class="text-xs font-bold text-slate-900">Belum Diverifikasi</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulir Data Induk Siswa & Sekolah -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50/70 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <i data-lucide="user" class="w-5 h-5 text-blue-600"></i>
+            <h2 class="text-base font-bold text-slate-900">Identitas Diri & Satuan Pendidikan Siswa</h2>
+          </div>
+          <span class="text-xs text-slate-500">Data ini akan otomatis muncul pada Lembar Portofolio Resmi</span>
+        </div>
+
+        <div class="p-6">
+          <form id="form-student-info" class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <!-- Kolom 1 -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Nama Lengkap Siswa</label>
+              <input type="text" id="student_name" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="Contoh: Muhammad Farhan Al-Ghifari">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">NISN / Nomor Induk</label>
+              <input type="text" id="student_nisn" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="0067891234 / 2122101">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Kelas & Peminatan</label>
+              <input type="text" id="student_class" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="XII MIPA 1 / F-12 Merdeka">
+            </div>
+
+            <!-- Kolom 2 -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Satuan Pendidikan (Nama Sekolah)</label>
+              <input type="text" id="school_name" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="SMA Negeri 1 Prestasi Bangsa">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Alamat Satuan Pendidikan</label>
+              <input type="text" id="school_address" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="Jl. Pemuda No. 45, Kota Yogyakarta">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Tahun Ajaran / Angkatan</label>
+              <input type="text" id="school_year" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="2025/2026">
+            </div>
+
+            <!-- Kolom 3 -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Tempat & Tanggal Lahir</label>
+              <input type="text" id="student_ttl" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="Yogyakarta, 15 Mei 2008">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Nilai Rata-rata Rapor (Skala 0-100)</label>
+              <input type="number" step="0.1" id="student_gpa" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="87.5">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Nama Orang Tua / Wali</label>
+              <input type="text" id="parent_name" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="Bpk. Hendra Gunawan, S.E.">
+            </div>
+
+            <div class="md:col-span-3 flex justify-end pt-2">
+              <button type="button" onclick="saveStudentInfo()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-xs transition cursor-pointer">
+                <i data-lucide="check" class="w-4 h-4"></i> Simpan Data Profil
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- TAB 2: ASESMEN MINAT HOLLAND RIASEC (18 BUTIR) -->
+    <!-- ========================================== -->
+    <div id="tab-riasec" class="tab-content hidden space-y-6">
+      
+      <!-- Asesmen Header -->
+      <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-200 mb-1.5">
+              <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Model Teori John L. Holland (RIASEC)
+            </div>
+            <h2 class="text-xl font-bold text-slate-900">Inventori Minat Karier & Bakat Siswa (18 Butir)</h2>
+            <p class="text-sm text-slate-500 mt-1">
+              Jawablah setiap butir pernyataan berdasarkan kecenderungan dan perasaan alamiahmu. Pilihlah:
+              <span class="font-medium text-slate-700">0 (Tidak Suka)</span>, 
+              <span class="font-medium text-slate-700">1 (Ragu-ragu / Netral)</span>, atau 
+              <span class="font-medium text-slate-700">2 (Suka / Sangat Cocok)</span>.
+            </p>
+          </div>
+          
+          <div class="flex items-center gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 shrink-0">
+            <div class="text-right">
+              <p class="text-xs text-slate-500">Progres Pengisian</p>
+              <p id="riasec-progress-text" class="text-sm font-bold text-blue-600">0 dari 18 butir</p>
+            </div>
+            <button onclick="calculateRiasec()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs cursor-pointer">
+              Hitung Ulang
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form 18 Butir Pertanyaan Terstruktur (3 butir per kategori RIASEC) -->
+      <div class="space-y-6">
+        
+        <!-- 1. REALISTIC (R) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-3.5 bg-blue-50/60 border-b border-blue-100 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">R</span>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Dimensi REALISTIC (Praktis, Alat & Fisik)</h3>
+                <p class="text-xs text-slate-500">Menyukai aktivitas hands-on, peralatan mesin, konstruksi, dan lapangan terbuka.</p>
+              </div>
+            </div>
+            <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full" id="score-badge-R">Skor: 0/6</span>
+          </div>
+          <div class="p-6 divide-y divide-slate-100">
+            
+            <!-- Butir 1 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#01</span>
+                <span class="text-sm text-slate-800 font-medium">Bongkar pasang alat mekanik, merakit peralatan elektronik, atau memperbaiki instalasi perangkat keras di rumah/sekolah.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q1_0" name="q1" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q1_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q1_1" name="q1" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q1_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q1_2" name="q1" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q1_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Butir 2 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#02</span>
+                <span class="text-sm text-slate-800 font-medium">Melakukan aktivitas fisik di luar ruangan (survei lapangan, eksplorasi alam, berkebun/agribisnis, atau aktivitas fisik teknik).</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q2_0" name="q2" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q2_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q2_1" name="q2" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q2_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q2_2" name="q2" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q2_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Butir 3 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#03</span>
+                <span class="text-sm text-slate-800 font-medium">Mengoperasikan mesin, perkakas kerja tangan, atau perlengkapan teknis dengan presisi dan ketelitian manual.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q3_0" name="q3" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q3_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q3_1" name="q3" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q3_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q3_2" name="q3" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q3_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 2. INVESTIGATIVE (I) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-3.5 bg-emerald-50/60 border-b border-emerald-100 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-emerald-600 text-white font-bold text-xs flex items-center justify-center">I</span>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Dimensi INVESTIGATIVE (Penelitian, Logika & Analisis)</h3>
+                <p class="text-xs text-slate-500">Menyukai eksperimen sains, teka-teki logika, pemecahan masalah teoritis, & coding.</p>
+              </div>
+            </div>
+            <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full" id="score-badge-I">Skor: 0/6</span>
+          </div>
+          <div class="p-6 divide-y divide-slate-100">
+            
+            <!-- Butir 4 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#04</span>
+                <span class="text-sm text-slate-800 font-medium">Melakukan eksperimen ilmiah di laboratorium atau menyelidiki fenomena alam dan fakta sains yang belum terungkap.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q4_0" name="q4" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q4_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q4_1" name="q4" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q4_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q4_2" name="q4" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q4_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Butir 5 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#05</span>
+                <span class="text-sm text-slate-800 font-medium">Memecahkan teka-teki logika yang rumit, menulis kode program (coding), atau menyelesaikan soal matematika analitis.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q5_0" name="q5" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q5_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q5_1" name="q5" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q5_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q5_2" name="q5" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q5_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Butir 6 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#06</span>
+                <span class="text-sm text-slate-800 font-medium">Membaca jurnal penelitian, menganalisis grafik statistik, dan mencari argumen ilmiah objektif di balik suatu topik permasalahan.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q6_0" name="q6" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q6_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q6_1" name="q6" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q6_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q6_2" name="q6" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q6_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 3. ARTISTIC (A) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-3.5 bg-purple-50/60 border-b border-purple-100 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-purple-600 text-white font-bold text-xs flex items-center justify-center">A</span>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Dimensi ARTISTIC (Kreativitas, Seni & Desain)</h3>
+                <p class="text-xs text-slate-500">Menyukai ekspresi orisinal, visual estetis, musik, penulisan, dan kebebasan kreasi.</p>
+              </div>
+            </div>
+            <span class="text-xs font-semibold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full" id="score-badge-A">Skor: 0/6</span>
+          </div>
+          <div class="p-6 divide-y divide-slate-100">
+            
+            <!-- Butir 7 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#07</span>
+                <span class="text-sm text-slate-800 font-medium">Menggambar sketsa, membuat desain grafis, ilustrasi digital, atau merancang tata ruang yang bernilai estetika tinggi.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q7_0" name="q7" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q7_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q7_1" name="q7" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q7_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q7_2" name="q7" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q7_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Butir 8 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#08</span>
+                <span class="text-sm text-slate-800 font-medium">Menulis cerita fiksi, puisi/naskah, memainkan alat musik, atau memproduksi karya sinematografi/video kreatif.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q8_0" name="q8" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q8_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q8_1" name="q8" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q8_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q8_2" name="q8" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q8_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Butir 9 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#09</span>
+                <span class="text-sm text-slate-800 font-medium">Bekerja dalam suasana fleksibel tanpa aturan kaku, mengandalkan intuisi artistik dan imajinasi orisinal.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q9_0" name="q9" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q9_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q9_1" name="q9" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q9_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q9_2" name="q9" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q9_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 4. SOCIAL (S) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-3.5 bg-rose-50/60 border-b border-rose-100 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-rose-600 text-white font-bold text-xs flex items-center justify-center">S</span>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Dimensi SOCIAL (Membantu, Konseling & Edukasi)</h3>
+                <p class="text-xs text-slate-500">Menyukai menolong sesama, mendengarkan curhat, membimbing, dan aksi kemanusiaan.</p>
+              </div>
+            </div>
+            <span class="text-xs font-semibold text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full" id="score-badge-S">Skor: 0/6</span>
+          </div>
+          <div class="p-6 divide-y divide-slate-100">
+            
+            <!-- Butir 10 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#10</span>
+                <span class="text-sm text-slate-800 font-medium">Mendengarkan keluh kesah / curhatan sahabat dan dengan senang hati memberikan bimbingan moral serta jalan keluar suportif.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q10_0" name="q10" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q10_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q10_1" name="q10" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q10_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q10_2" name="q10" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q10_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Butir 11 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#11</span>
+                <span class="text-sm text-slate-800 font-medium">Mengajari teman yang belum memahami materi pelajaran, menjadi tutor sebaya, atau memfasilitasi diskusi kelas.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q11_0" name="q11" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q11_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q11_1" name="q11" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q11_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q11_2" name="q11" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q11_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Butir 12 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#12</span>
+                <span class="text-sm text-slate-800 font-medium">Terlibat aktif dalam aksi bakti sosial, relawan Palang Merah Remaja (PMR), kegiatan amal, atau peduli lingkungan kemanusiaan.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q12_0" name="q12" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q12_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q12_1" name="q12" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q12_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q12_2" name="q12" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q12_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 5. ENTERPRISING (E) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-3.5 bg-amber-50/60 border-b border-amber-100 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-amber-600 text-white font-bold text-xs flex items-center justify-center">E</span>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Dimensi ENTERPRISING (Kepemimpinan, Bisnis & Negosiasi)</h3>
+                <p class="text-xs text-slate-500">Menyukai kepemimpinan, mempersuasi orang lain, wirausaha, dan memprakarsai proyek.</p>
+              </div>
+            </div>
+            <span class="text-xs font-semibold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full" id="score-badge-E">Skor: 0/6</span>
+          </div>
+          <div class="p-6 divide-y divide-slate-100">
+            
+            <!-- Butir 13 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#13</span>
+                <span class="text-sm text-slate-800 font-medium">Mempromosikan produk/jasa, berdagang kreatif, atau meyakinkan orang lain agar mendukung gagasan bisnis kita.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q13_0" name="q13" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q13_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q13_1" name="q13" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q13_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q13_2" name="q13" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q13_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Butir 14 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#14</span>
+                <span class="text-sm text-slate-800 font-medium">Menjadi ketua kelompok, pengurus OSIS/MPK, atau pemimpin yang mengambil keputusan strategis di saat kritis.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q14_0" name="q14" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q14_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q14_1" name="q14" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q14_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q14_2" name="q14" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q14_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Butir 15 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#15</span>
+                <span class="text-sm text-slate-800 font-medium">Menyusun agenda acara besar, bernegosiasi dengan sponsor, dan menggerakkan tim untuk mencapai target yang tinggi.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q15_0" name="q15" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q15_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q15_1" name="q15" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q15_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q15_2" name="q15" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q15_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 6. CONVENTIONAL (C) -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+          <div class="px-6 py-3.5 bg-cyan-50/60 border-b border-cyan-100 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <span class="w-7 h-7 rounded-lg bg-cyan-600 text-white font-bold text-xs flex items-center justify-center">C</span>
+              <div>
+                <h3 class="text-sm font-bold text-slate-900">Dimensi CONVENTIONAL (Keteraturan, Data & Prosedur)</h3>
+                <p class="text-xs text-slate-500">Menyukai pengarsipan sistematis, pembukuan kas teliti, dan bekerja sesuai SOP.</p>
+              </div>
+            </div>
+            <span class="text-xs font-semibold text-cyan-700 bg-cyan-100 px-2 py-0.5 rounded-full" id="score-badge-C">Skor: 0/6</span>
+          </div>
+          <div class="p-6 divide-y divide-slate-100">
+            
+            <!-- Butir 16 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#16</span>
+                <span class="text-sm text-slate-800 font-medium">Merapikan dokumen fisik, menata folder komputer secara terstruktur rapi, dan memberi label jelas agar cepat ditemukan.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q16_0" name="q16" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q16_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q16_1" name="q16" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q16_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q16_2" name="q16" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q16_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Butir 17 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#17</span>
+                <span class="text-sm text-slate-800 font-medium">Mencatat pembukuan keuangan kas organisasi, memeriksa nota kwitansi, dan menghitung rincian anggaran secara akurat.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q17_0" name="q17" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q17_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q17_1" name="q17" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q17_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q17_2" name="q17" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q17_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Butir 18 -->
+            <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-slate-400 mr-1.5">#18</span>
+                <span class="text-sm text-slate-800 font-medium">Bekerja dengan mengikuti petunjuk operasional standar (SOP), checklist tugas, dan jadwal kerja yang pasti serta konsisten.</span>
+              </div>
+              <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
+                <div class="relative">
+                  <input type="radio" id="q18_0" name="q18" value="0" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q18_0" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">0 - Tidak Suka</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q18_1" name="q18" value="1" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q18_1" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">1 - Ragu</label>
+                </div>
+                <div class="relative">
+                  <input type="radio" id="q18_2" name="q18" value="2" class="sr-only" onchange="handleAnswerChange()">
+                  <label for="q18_2" class="block px-3 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 text-slate-600 cursor-pointer hover:bg-slate-100 transition">2 - Suka</label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- HASIL ANALISIS RIASEC (RADAR CHART & HOLLAND CODE PROFILE) -->
+      <div id="riasec-results-card" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
+        <div class="flex items-center justify-between pb-6 border-b border-slate-200">
+          <div>
+            <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Hasil Diagnosis Psikometri Minat</span>
+            <h3 class="text-xl font-extrabold text-slate-900 mt-0.5">Analisis Profil Holland & Peta Radar RIASEC</h3>
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-slate-500">3 Huruf Dominan (Holland Code):</span>
+            <div id="result-holland-badge" class="text-2xl font-black text-indigo-700 tracking-wider">SEC</div>
+          </div>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- Radar Chart Visual Interactive -->
+          <div class="lg:col-span-5 flex flex-col items-center justify-center p-4 bg-slate-50/70 rounded-2xl border border-slate-200">
+            <div class="w-full max-w-[340px] aspect-square relative">
+              <canvas id="riasecRadarChart"></canvas>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2 text-center">Skala masing-masing dimensi: 0 (Min) hingga 6 (Maks)</p>
+          </div>
+
+          <!-- Deskripsi & Rekomendasi Rumpun Karier -->
+          <div class="lg:col-span-7 space-y-4">
+            <div>
+              <h4 id="result-profile-title" class="text-base font-bold text-slate-900">Tipe Kepribadian Minat: Penolong & Pengelola (Social - Enterprising - Conventional)</h4>
+              <p id="result-profile-desc" class="text-sm text-slate-600 mt-1 leading-relaxed">
+                Anda memiliki dorongan tinggi dalam berinteraksi sosial, mengayomi orang lain, serta terampil mengoordinasikan tim kerja secara teratur dan sistematis.
+              </p>
+            </div>
+
+            <!-- Rekomendasi 3 Rumpun Studi Lanjut & Karier -->
+            <div class="bg-blue-50/50 rounded-xl p-4 border border-blue-100">
+              <h5 class="text-xs font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1.5 mb-2.5">
+                <i data-lucide="compass" class="w-4 h-4 text-blue-600"></i>
+                Rekomendasi Rumpun Peminatan & Program Studi Lanjut:
+              </h5>
+              <div id="result-career-suggestions" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <!-- Rincian Skor Per Dimensi (Bar Progress) -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2">
+              <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="text-blue-700">Realistic (R)</span>
+                  <span id="score-val-R" class="text-slate-700">0/6</span>
+                </div>
+                <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                  <div id="bar-val-R" class="bg-blue-600 h-full rounded-full transition-all" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="text-emerald-700">Investigative (I)</span>
+                  <span id="score-val-I" class="text-slate-700">0/6</span>
+                </div>
+                <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                  <div id="bar-val-I" class="bg-emerald-600 h-full rounded-full transition-all" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="text-purple-700">Artistic (A)</span>
+                  <span id="score-val-A" class="text-slate-700">0/6</span>
+                </div>
+                <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                  <div id="bar-val-A" class="bg-purple-600 h-full rounded-full transition-all" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="text-rose-700">Social (S)</span>
+                  <span id="score-val-S" class="text-slate-700">0/6</span>
+                </div>
+                <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                  <div id="bar-val-S" class="bg-rose-600 h-full rounded-full transition-all" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="text-amber-700">Enterprising (E)</span>
+                  <span id="score-val-E" class="text-slate-700">0/6</span>
+                </div>
+                <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                  <div id="bar-val-E" class="bg-amber-600 h-full rounded-full transition-all" style="width: 0%"></div>
+                </div>
+              </div>
+
+              <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200">
+                <div class="flex justify-between text-xs font-semibold mb-1">
+                  <span class="text-cyan-700">Conventional (C)</span>
+                  <span id="score-val-C" class="text-slate-700">0/6</span>
+                </div>
+                <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                  <div id="bar-val-C" class="bg-cyan-600 h-full rounded-full transition-all" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-2 flex justify-end">
+              <button onclick="switchTab('tab-portofolio')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-800 transition cursor-pointer">
+                Lanjut ke Modul Portofolio Prestasi <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- TAB 3: BRANKAS PRESTASI & DOKUMENTASI -->
+    <!-- ========================================== -->
+    <div id="tab-portofolio" class="tab-content hidden space-y-6">
+      
+      <!-- Top Action & Form Input -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-5 border-b border-slate-200 gap-3">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="folder-lock" class="w-5 h-5 text-amber-500"></i> Brankas Rekam Jejak & Portofolio Siswa
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">Catat seluruh prestasi kurikuler, organisasi, sertifikasi, maupun portofolio karya kreatif.</p>
+          </div>
+          <span class="text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg self-start sm:self-auto">
+            Total Karya: <strong id="portfolio-total-label" class="text-slate-800">0</strong> Capaian
+          </span>
+        </div>
+
+        <!-- Add Form -->
+        <form id="form-portfolio" class="mt-5 grid grid-cols-1 md:grid-cols-4 gap-4" onsubmit="event.preventDefault(); addPortfolioItem();">
+          <div class="md:col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Capaian / Lomba / Proyek Karya *</label>
+            <input type="text" id="port_title" required class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: Juara 2 Lomba Karya Tulis Ilmiah Remaja (LKIR)">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Kategori Aktivitas *</label>
+            <select id="port_category" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+              <option value="Prestasi Akademik">Prestasi Akademik (OSN, Lomba Sains)</option>
+              <option value="Ekstrakurikuler / Organisasi">Organisasi & Ekstrakurikuler (OSIS, PMR, Pramuka)</option>
+              <option value="Proyek Kreatif / Portofolio">Proyek Kreatif / Karya Mandiri (Desain, Coding)</option>
+              <option value="Sertifikasi / Kursus">Sertifikasi & Kursus Pelatihan</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tingkat Capaian *</label>
+            <select id="port_level" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+              <option value="Sekolah">Tingkat Satuan Pendidikan (Sekolah)</option>
+              <option value="Kabupaten/Kota">Tingkat Kabupaten / Kota</option>
+              <option value="Provinsi">Tingkat Provinsi</option>
+              <option value="Nasional">Tingkat Nasional</option>
+              <option value="Internasional">Tingkat Internasional</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tahun Perolehan *</label>
+            <input type="number" id="port_year" required min="2018" max="2030" value="2025" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan Bukti Sertifikat / Portofolio Karya (URL/Drive)</label>
+            <input type="text" id="port_url" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="https://drive.google.com/... atau https://github.com/...">
+          </div>
+
+          <div class="flex items-end">
+            <button type="submit" class="w-full px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-lg shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i> Tambah ke Brankas
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Portfolio Table / Cards List -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50/70 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <i data-lucide="list-checks" class="w-4 h-4 text-blue-600"></i>
+            <h3 class="text-sm font-bold text-slate-900">Daftar Bukti Portofolio & Capaian Tersimpan</h3>
+          </div>
+          
+          <!-- Category Filters -->
+          <div class="flex items-center gap-1.5 overflow-x-auto text-xs">
+            <button onclick="filterPortfolio('all')" class="port-filter-btn px-2.5 py-1 rounded-md bg-blue-100 text-blue-700 font-semibold cursor-pointer">Semua</button>
+            <button onclick="filterPortfolio('Prestasi Akademik')" class="port-filter-btn px-2.5 py-1 rounded-md text-slate-600 hover:bg-slate-200 cursor-pointer">Akademik</button>
+            <button onclick="filterPortfolio('Ekstrakurikuler / Organisasi')" class="port-filter-btn px-2.5 py-1 rounded-md text-slate-600 hover:bg-slate-200 cursor-pointer">Organisasi</button>
+            <button onclick="filterPortfolio('Proyek Kreatif / Portofolio')" class="port-filter-btn px-2.5 py-1 rounded-md text-slate-600 hover:bg-slate-200 cursor-pointer">Karya Kreatif</button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-slate-600">
+            <thead class="bg-slate-50/80 text-xs text-slate-500 uppercase border-b border-slate-200">
+              <tr>
+                <th class="px-5 py-3">Nama Capaian / Karya</th>
+                <th class="px-4 py-3">Kategori</th>
+                <th class="px-4 py-3">Tingkat</th>
+                <th class="px-3 py-3 text-center">Tahun</th>
+                <th class="px-4 py-3">Status Verifikasi BK</th>
+                <th class="px-4 py-3 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="portfolio-table-body" class="divide-y divide-slate-100">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="portfolio-empty-state" class="hidden p-8 text-center">
+          <i data-lucide="inbox" class="w-10 h-10 mx-auto text-slate-300"></i>
+          <p class="mt-2 text-sm text-slate-500 font-medium">Belum ada portofolio yang ditambahkan.</p>
+          <p class="text-xs text-slate-400">Gunakan form di atas atau klik "Isi Data Demo" untuk melihat contoh.</p>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- TAB 4: KONSULTASI PEMINATAN & REKOMENDASI GURU BK -->
+    <!-- ========================================== -->
+    <div id="tab-konsultasi" class="tab-content hidden space-y-6">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Sisi Siswa: Pilihan Studi Lanjut & Cita-cita -->
+        <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-xs p-6 space-y-4">
+          <div class="pb-3 border-b border-slate-200">
+            <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Aspirasi Mandiri Siswa</span>
+            <h3 class="text-base font-bold text-slate-900 mt-0.5">Target Peminatan & Karier Impian</h3>
+            <p class="text-xs text-slate-500">Isikan rencana studi lanjut yang diminati oleh siswa bersangkutan.</p>
+          </div>
+
+          <div class="space-y-4 pt-1">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Target Jurusan / Sekolah Pilihan 1 *</label>
+              <input type="text" id="target_choice_1" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: S1 Teknik Informatika (ITB / UI)">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Target Jurusan / Sekolah Pilihan 2</label>
+              <input type="text" id="target_choice_2" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: S1 Ilmu Komputer / Sistem Informasi (UGM / ITS)">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Cita-Cita Karier / Profesi Idaman *</label>
+              <input type="text" id="target_career_dream" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: Software Architect & AI Researcher">
+            </div>
+
+            <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1.5">
+              <span class="font-bold text-slate-700 flex items-center gap-1.5">
+                <i data-lucide="info" class="w-3.5 h-3.5 text-blue-600"></i> Panduan Penyelarasan:
+              </span>
+              <p class="text-slate-600 leading-relaxed">
+                Pilihan peminatan siswa akan dikomparasikan dengan nilai rapor, portofolio karya, dan hasil asesmen minat Holland RIASEC dalam sidang bimbingan konselor.
+              </p>
+            </div>
+
+            <button type="button" onclick="saveAspiration()" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer">
+              Simpan Aspirasi Siswa
+            </button>
+          </div>
+        </div>
+
+        <!-- Sisi Guru BK / Konselor: Evaluasi & Penetapan Rekomendasi Resmi -->
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-xs p-6 space-y-4">
+          <div class="pb-3 border-b border-slate-200 flex items-center justify-between">
+            <div>
+              <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Otoritas Bimbingan Konseling</span>
+              <h3 class="text-base font-bold text-slate-900 mt-0.5">Lembar Rekomendasi & Catatan Konselor BK</h3>
+              <p class="text-xs text-slate-500">Evaluasi komprehensif berdasarkan triangulasi data objektif siswa.</p>
+            </div>
+            <div class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </div>
+          </div>
+
+          <div class="space-y-4 pt-1">
+            <!-- Keputusan Status Rekomendasi -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Kesimpulan Rekomendasi Akhir Guru BK *</label>
+              <select id="counselor_status" class="w-full px-3.5 py-2.5 text-sm font-semibold rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white">
+                <option value="Sangat Direkomendasikan (Sesuai Minat & Bakat)" class="text-emerald-700">✅ Sangat Direkomendasikan (Pilihan 1 Sesuai Minat & Bakat)</option>
+                <option value="Direkomendasikan dengan Catatan Penguatan" class="text-blue-700">ℹ️ Direkomendasikan dengan Catatan Penguatan Akademik</option>
+                <option value="Perlu Pertimbangan Khusus / Konsultasi Lanjutan" class="text-amber-700">⚠️ Perlu Pertimbangan Khusus / Konsultasi Ulang</option>
+                <option value="Diarahkan ke Alternatif Pilihan 2" class="text-indigo-700">🔄 Diarahkan Lebih Condong ke Alternatif Pilihan 2</option>
+              </select>
+            </div>
+
+            <!-- Catatan Evaluasi Konselor -->
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Evaluasi / Diagnostik Konselor BK *</label>
+              <textarea id="counselor_notes" rows="4" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none leading-relaxed" placeholder="Tuliskan analisis perbandingan antara nilai rapor, skor asesmen RIASEC, kepribadian kerja sama, dan konsistensi portofolio siswa..."></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Sidang / Bimbingan *</label>
+                <input type="date" id="counselor_date" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Guru Pembimbing BK *</label>
+                <input type="text" id="counselor_name" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="Dra. Hj. Nurul Hidayati, M.Pd., Kons.">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">NIP Guru Pembimbing BK</label>
+              <input type="text" id="counselor_nip" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="19780415 200501 2 004">
+            </div>
+
+            <div class="pt-2 flex justify-end">
+              <button type="button" onclick="saveCounselorNotes()" class="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold shadow-xs transition cursor-pointer">
+                <i data-lucide="check-circle" class="w-4 h-4"></i> Simpan Rekomendasi Resmi Guru BK
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- TAB 5: RESUME KARIER SIAP CETAK (PDF VIEW) -->
+    <!-- ========================================== -->
+    <div id="tab-resume" class="tab-content hidden space-y-6">
+      
+      <!-- Top Action Bar (Hanya tampil di layar, tersembunyi saat print) -->
+      <div class="no-print bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-2 text-slate-700">
+          <i data-lucide="printer" class="w-5 h-5 text-blue-600"></i>
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Format Lembar Portofolio Karier Resmi (One-Page Ready)</h3>
+            <p class="text-xs text-slate-500">Format ini telah dioptimalkan untuk dicetak dalam selembar kertas A4 atau disimpan ke PDF.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button onclick="window.print()" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-md shadow-blue-500/20 transition cursor-pointer">
+            <i data-lucide="printer" class="w-4 h-4"></i> Cetak / Simpan PDF (Ctrl+P)
+          </button>
+        </div>
+      </div>
+
+      <!-- KERTAS DOKUMEN RESMI (SHEET DINAS) -->
+      <div class="print-document-sheet bg-white max-w-4xl mx-auto p-8 sm:p-10 rounded-2xl border border-slate-300 shadow-lg text-slate-900">
+        
+        <!-- KOP SURAT DINAS RESMI -->
+        <div class="border-b-2 border-slate-900 pb-3 text-center relative flex items-center justify-between">
+          <!-- Logo Sekolah / Tut Wuri Handayani Placeholder -->
+          <div class="w-16 h-16 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center shrink-0">
+            <i data-lucide="graduation-cap" class="w-9 h-9 text-blue-900"></i>
+          </div>
+
+          <div class="flex-1 px-4 text-center">
+            <p class="text-xs uppercase tracking-widest font-semibold text-slate-600">Pemerintah Provinsi / Dinas Pendidikan</p>
+            <h1 id="print-school-name" class="text-lg sm:text-xl font-black uppercase text-slate-900 tracking-tight">SMA NEGERI 1 PRESTASI BANGSA</h1>
+            <p id="print-school-address" class="text-[11px] text-slate-600">Jl. Pemuda No. 45, Kota Yogyakarta, DI Yogyakarta • Telp: (0274) 555-0129 • Web: www.sman1prestasibangsa.sch.id</p>
+            <p class="text-[10px] text-slate-500 font-medium">UNIT LAYANAN BIMBINGAN KONSELING & PENGEMBANGAN KARIER SISWA</p>
+          </div>
+
+          <!-- Lambang BK / Akreditasi -->
+          <div class="w-16 h-16 rounded-full bg-slate-100 border border-slate-300 flex flex-col items-center justify-center shrink-0 text-center">
+            <span class="text-[9px] font-bold text-slate-400">AKREDITASI</span>
+            <span class="text-xs font-black text-blue-900">A UNGGUL</span>
+          </div>
+        </div>
+        <div class="border-b border-slate-900 mt-0.5 mb-5"></div>
+
+        <!-- JUDUL DOKUMEN -->
+        <div class="text-center mb-5">
+          <h2 class="text-base sm:text-lg font-black uppercase tracking-wider text-slate-900">
+            E-PORTOFOLIO KARIER & REKOMENDASI PEMINATAN SISWA
+          </h2>
+          <p class="text-[11px] text-slate-600">Tahun Ajaran <span id="print-school-year" class="font-bold">2025/2026</span> • Nomor Dokumen: <span id="print-doc-id" class="font-mono font-bold">BK/PORTO-2025/089</span></p>
+        </div>
+
+        <!-- IDENTITAS SISWA -->
+        <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200 mb-5 flex flex-col sm:flex-row items-center gap-5">
+          <!-- Foto Siswa -->
+          <div class="w-24 h-32 rounded-lg bg-slate-200 border-2 border-dashed border-slate-400 flex flex-col items-center justify-center shrink-0 overflow-hidden text-center p-2">
+            <i data-lucide="user" class="w-10 h-10 text-slate-400"></i>
+            <span class="text-[9px] text-slate-500 font-semibold mt-1">Pas Foto 3x4</span>
+          </div>
+
+          <!-- Tabel Data Diri -->
+          <div class="flex-1 grid grid-cols-2 gap-y-2 text-xs">
+            <div>
+              <span class="text-slate-500 block text-[10px] uppercase font-semibold">Nama Lengkap</span>
+              <span id="print-student-name" class="font-bold text-slate-900 text-sm">Muhammad Farhan Al-Ghifari</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block text-[10px] uppercase font-semibold">NISN / Nomor Induk</span>
+              <span id="print-student-nisn" class="font-bold text-slate-900 font-mono">0067891234 / 2122101</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block text-[10px] uppercase font-semibold">Kelas & Rombel</span>
+              <span id="print-student-class" class="font-bold text-slate-900">XII MIPA 1</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block text-[10px] uppercase font-semibold">Tempat, Tanggal Lahir</span>
+              <span id="print-student-ttl" class="font-bold text-slate-900">Yogyakarta, 15 Mei 2008</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block text-[10px] uppercase font-semibold">Rata-rata Rapor</span>
+              <span id="print-student-gpa" class="font-bold text-blue-700">87.5 / 100</span>
+            </div>
+            <div>
+              <span class="text-slate-500 block text-[10px] uppercase font-semibold">Orang Tua / Wali</span>
+              <span id="print-parent-name" class="font-bold text-slate-900">Bpk. Hendra Gunawan, S.E.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION HASIL ASESMEN MINAT RIASEC & GRAFIK RADAR -->
+        <div class="mb-5 border border-slate-200 rounded-xl p-4 bg-white">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+              <i data-lucide="pie-chart" class="w-4 h-4 text-blue-600"></i> I. Hasil Asesmen Minat Holland (RIASEC 18 Butir)
+            </h3>
+            <div class="text-xs">
+              Holland Code: <span id="print-holland-code" class="font-black text-blue-700 px-2 py-0.5 bg-blue-50 border border-blue-200 rounded">SEC</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+            <!-- Radar Canvas Miniatur untuk Print -->
+            <div class="md:col-span-5 flex justify-center items-center">
+              <div class="w-[190px] h-[190px]">
+                <canvas id="riasecPrintRadarChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Detail Interpretasi -->
+            <div class="md:col-span-7 text-xs space-y-2">
+              <p>
+                <strong class="text-slate-800">Interpretasi Profil:</strong>
+                <span id="print-profile-desc" class="text-slate-600 block mt-0.5 leading-relaxed">
+                  Menunjukkan kecenderungan dominan pada bidang Social (Kepedulian Sosial & Komunikasi), Enterprising (Inisiatif & Kepemimpinan), dan Conventional (Kerapian Administratif).
+                </span>
+              </p>
+              <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                <span class="font-bold text-slate-700 block text-[11px] mb-1">Rekomendasi Rumpun Bidang Karier & Studi Lanjut:</span>
+                <span id="print-career-clusters" class="text-slate-600 leading-snug block">
+                  1. Psikologi & Konseling Kemanusiaan • 2. Manajemen Bisnis & Hubungan Masyarakat • 3. Teknologi Informasi & Sistem Bisnis
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION PRESTASI & PORTOFOLIO UNGGULAN -->
+        <div class="mb-5 border border-slate-200 rounded-xl p-4 bg-white">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+              <i data-lucide="award" class="w-4 h-4 text-amber-500"></i> II. Rekam Prestasi & Portofolio Karya Unggulan (Top 3)
+            </h3>
+            <span class="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Terverifikasi BK</span>
+          </div>
+
+          <div id="print-top-portfolio-list" class="space-y-2 text-xs">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- SECTION PERBANDINGAN PILIHAN SISWA & REKOMENDASI RESMI GURU BK -->
+        <div class="mb-6 border border-slate-200 rounded-xl p-4 bg-white">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5 border-b border-slate-100 pb-2 mb-3">
+            <i data-lucide="git-compare" class="w-4 h-4 text-emerald-600"></i> III. Penyelarasan Aspirasi Siswa & Keputusan Rekomendasi Guru BK
+          </h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+            <div class="bg-blue-50/50 p-3 rounded-lg border border-blue-100">
+              <span class="font-bold text-blue-900 block text-[11px] mb-1">Aspirasi Peminatan Mandiri Siswa:</span>
+              <ul class="space-y-1 text-slate-700">
+                <li>• <strong>Target Pilihan 1:</strong> <span id="print-choice-1">S1 Teknik Informatika</span></li>
+                <li>• <strong>Target Pilihan 2:</strong> <span id="print-choice-2">S1 Sistem Informasi</span></li>
+                <li>• <strong>Cita-Cita Karier:</strong> <span id="print-career-dream">Software Engineer</span></li>
+              </ul>
+            </div>
+
+            <div class="bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">
+              <span class="font-bold text-emerald-900 block text-[11px] mb-1">Keputusan & Rekomendasi Resmi Konselor:</span>
+              <div class="mb-1.5">
+                <span id="print-counselor-status" class="inline-block px-2 py-0.5 text-[11px] font-bold rounded bg-emerald-600 text-white">
+                  Sangat Direkomendasikan
+                </span>
+              </div>
+              <p class="text-slate-600 italic text-[11px] leading-relaxed" id="print-counselor-notes">
+                "Berdasarkan analisis nilai rapor akademik yang unggul pada mata pelajaran eksak serta skor RIASEC pada dimensi I & E yang tinggi, siswa sangat potensial untuk melanjutkan ke rumpun Rekayasa Komputer."
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEMBAR PENGESAHAN / 3 KOLOM TANDA TANGAN RESMI -->
+        <div class="pt-4 text-xs">
+          <div class="text-right mb-6 text-slate-700">
+            Ditetapkan di: <span id="print-loc-date" class="font-medium">Yogyakarta, 16 Oktober 2026</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-4 text-center">
+            
+            <!-- Tanda Tangan 1: Siswa -->
+            <div class="flex flex-col justify-between h-32">
+              <p class="text-[11px] text-slate-600 font-semibold">Siswa Yang Bersangkutan,</p>
+              <div class="border-b border-slate-900 w-36 mx-auto"></div>
+              <p id="print-sign-student" class="font-bold text-slate-900 text-xs">Muhammad Farhan Al-Ghifari</p>
+            </div>
+
+            <!-- Tanda Tangan 2: Orang Tua -->
+            <div class="flex flex-col justify-between h-32">
+              <p class="text-[11px] text-slate-600 font-semibold">Mengetahui,<br>Orang Tua / Wali Murid,</p>
+              <div class="border-b border-slate-900 w-36 mx-auto"></div>
+              <p id="print-sign-parent" class="font-bold text-slate-900 text-xs">Bpk. Hendra Gunawan, S.E.</p>
+            </div>
+
+            <!-- Tanda Tangan 3: Guru BK Pembimbing -->
+            <div class="flex flex-col justify-between h-32">
+              <p class="text-[11px] text-slate-600 font-semibold">Guru Pembimbing Konseling (BK),</p>
+              <div class="border-b border-slate-900 w-36 mx-auto"></div>
+              <div>
+                <p id="print-sign-counselor" class="font-bold text-slate-900 text-xs">Dra. Hj. Nurul Hidayati, M.Pd.</p>
+                <p class="text-[10px] text-slate-500">NIP. <span id="print-sign-nip">19780415 200501 2 004</span></p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="no-print mt-12 bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <i data-lucide="shield-check" class="w-4 h-4 text-blue-600"></i>
+        <span>SIM-BK: Sistem Informasi Manajemen Bimbingan Konseling Sekolah Berstandar Nasional</span>
+      </div>
+      <div>
+        <span>Penyimpanan Lokal Aktif (Browser LocalStorage) • Siap Dijalankan Langsung</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- JAVASCRIPT LOGIC LENGKAP -->
+  <script>
+    // ==============================================================
+    // KONSTANTA & STRUKTUR DATA UTAMA SIM-BK
+    // ==============================================================
+    const STORAGE_KEY = 'SIM_BK_DATA_V2';
+
+    // Model Referensi Holland RIASEC
+    const RIASEC_PROFILES = {
+      R: {
+        name: 'Realistic',
+        title: 'Tipe Praktis & Teknik',
+        color: '#2563eb',
+        desc: 'Cenderung menyukai aktivitas fisik, alat perkakas kerja, mekanik, perakitan, dan kegiatan lapangan terbuka.',
+        careers: ['Teknik Mesin & Elektro', 'Teknik Sipil & Arsitektur', 'Agribisnis & Kehutanan', 'Mekatronika & Otomotif']
+      },
+      I: {
+        name: 'Investigative',
+        title: 'Tipe Peneliti & Pemikir Analitis',
+        color: '#059669',
+        desc: 'Menyukai pemecahan masalah logika abstrak, eksperimen laboratorium ilmiah, analisis data kuantitatif, dan coding.',
+        careers: ['Teknik Informatika & AI', 'Kedokteran & Sains Biomedis', 'Matematika & Data Science', 'Fisika & Bioteknologi']
+      },
+      A: {
+        name: 'Artistic',
+        title: 'Tipe Kreatif & Ekspresif',
+        color: '#9333ea',
+        desc: 'Menyukai ekspresi bebas, karya seni visual/audio orisinal, desain grafis, sastra penulisan, dan dunia kreatif tanpa sekat kaku.',
+        careers: ['Desain Komunikasi Visual (DKV)', 'Arsitektur & Desain Interior', 'Perfilman & Animasi Digital', 'Sastra & Jurnalisme Kreatif']
+      },
+      S: {
+        name: 'Social',
+        title: 'Tipe Penolong & Edukator',
+        color: '#e11d48',
+        desc: 'Memiliki empati tinggi, senang mengayomi, mengajar sesama, mendengarkan curhat, konseling, dan mengabdi untuk kemanusiaan.',
+        careers: ['Pendidikan / Keguruan', 'Psikologi & Bimbingan Konseling', 'Ilmu Keperawatan & Kesehatan Masyarakat', 'Hubungan Masyarakat (Humas)']
+      },
+      E: {
+        name: 'Enterprising',
+        title: 'Tipe Pemimpin & Wirausahawan',
+        color: '#d97706',
+        desc: 'Memiliki daya persuasi kuat, suka memimpin organisasi, merancang inisiatif bisnis baru, dan berani mengambil risiko target tinggi.',
+        careers: ['Manajemen Bisnis & Kewirausahaan', 'Ilmu Hukum & Advokasi', 'Hubungan Internasional & Diplomasi', 'Pemasaran Digital & Manajemen Acara']
+      },
+      C: {
+        name: 'Conventional',
+        title: 'Tipe Teratur & Administratif',
+        color: '#0891b2',
+        desc: 'Teliti, menyukai prosedur standar kerja yang rapi, pencatatan keuangan akurat, manajemen data berkas, dan kepatuhan sistematis.',
+        careers: ['Akuntansi & Perpajakan', 'Manajemen Keuangan Perbankan', 'Sistem Informasi Bisnis', 'Administrasi Publik & Tata Kelola Dokumen']
+      }
+    };
+
+    // Data Awal Standar (Demo Data Realistis)
+    const DEFAULT_DATA = {
+      student: {
+        name: 'Muhammad Farhan Al-Ghifari',
+        nisn: '0067891234 / 2122101',
+        class: 'XII MIPA 1 (Peminatan Sains & Teknologi)',
+        school: 'SMA Negeri 1 Prestasi Bangsa',
+        schoolAddress: 'Jl. Pemuda No. 45, Kota Yogyakarta, DI Yogyakarta',
+        schoolYear: '2025/2026',
+        ttl: 'Yogyakarta, 15 Mei 2008',
+        gpa: 88.5,
+        parentName: 'Bpk. Hendra Gunawan, S.E.'
+      },
+      answers: {
+        // R (0-6)
+        q1: 2, q2: 1, q3: 1,
+        // I (0-6)
+        q4: 2, q5: 2, q6: 2,
+        // A (0-6)
+        q7: 1, q8: 1, q9: 0,
+        // S (0-6)
+        q10: 2, q11: 2, q12: 1,
+        // E (0-6)
+        q13: 2, q14: 1, q15: 1,
+        // C (0-6)
+        q16: 1, q17: 2, q18: 2
+      },
+      portfolio: [
+        {
+          id: 'port-1',
+          title: 'Juara 1 Lomba Karya Tulis Ilmiah Remaja (LKIR) Tingkat Provinsi',
+          category: 'Prestasi Akademik',
+          level: 'Provinsi',
+          year: 2025,
+          url: 'https://drive.google.com/drive/folders/lkir-sains-2025',
+          verified: true
+        },
+        {
+          id: 'port-2',
+          title: 'Ketua Divisi Publikasi & Dokumentasi OSIS / MPK Sekolah',
+          category: 'Ekstrakurikuler / Organisasi',
+          level: 'Sekolah',
+          year: 2024,
+          url: 'https://instagram.com/osis_sman1prestasibangsa',
+          verified: true
+        },
+        {
+          id: 'port-3',
+          title: 'Pembuat Prototipe Aplikasi Edukasi Kuis Cerdas Berbasis Web (JavaScript)',
+          category: 'Proyek Kreatif / Portofolio',
+          level: 'Kabupaten/Kota',
+          year: 2025,
+          url: 'https://github.com/farhan-dev/smart-quiz-edukasi',
+          verified: true
+        }
+      ],
+      aspiration: {
+        choice1: 'S1 Teknik Informatika - Institut Teknologi Bandung (ITB)',
+        choice2: 'S1 Sistem Informasi - Universitas Gadjah Mada (UGM)',
+        careerDream: 'Lead Software Engineer & Pengembang Teknologi AI'
+      },
+      counselor: {
+        status: 'Sangat Direkomendasikan (Sesuai Minat & Bakat)',
+        notes: 'Hasil asesmen minat RIASEC menunjukkan kode dominan IEC/ISE yang sangat selaras dengan minat rekayasa teknologi dan komputasi analitis. Nilai rata-rata rapor eksak (Matematika & Fisika: 91.2) serta portofolio karya coding mandiri sangat mendukung daya saing siswa pada seleksi perguruan tinggi negeri.',
+        date: '2026-10-16',
+        name: 'Dra. Hj. Nurul Hidayati, M.Pd., Kons.',
+        nip: '19780415 200501 2 004'
+      }
+    };
+
+    // State Aplikasi
+    let appData = {};
+    let radarChartInstance = null;
+    let radarPrintChartInstance = null;
+    let activePortfolioFilter = 'all';
+
+    // ==============================================================
+    // INISIALISASI & LOCAL STORAGE
+    // ==============================================================
+    function initApp() {
+      loadData();
+      renderAllTabs();
+      setupEventListeners();
+      lucide.createIcons();
+    }
+
+    function loadData() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        try {
+          appData = JSON.parse(stored);
+        } catch (e) {
+          appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        }
+      } else {
+        appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        saveDataToStorage(false);
+      }
+    }
+
+    function saveDataToStorage(showToast = true) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+      if (showToast) {
+        showNotification('Data berhasil disimpan ke sistem penyimpanan lokal!', 'success');
+      }
+      updateDashboardStats();
+      updatePrintView();
+    }
+
+    function resetDemoData() {
+      if (confirm('Apakah Anda yakin ingin memuat ulang Data Demo realistis? Data yang sedang diedit akan digantikan.')) {
+        appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        saveDataToStorage(false);
+        renderAllTabs();
+        showNotification('Data Demo sukses dimuat!', 'info');
+      }
+    }
+
+    // ==============================================================
+    // TAB MANAGEMENT
+    // ==============================================================
+    function switchTab(tabId) {
+      const tabs = ['tab-dashboard', 'tab-riasec', 'tab-portofolio', 'tab-konsultasi', 'tab-resume'];
+      tabs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (id === tabId) {
+            el.classList.remove('hidden');
+            el.classList.add('block');
+          } else {
+            el.classList.remove('block');
+            el.classList.add('hidden');
+          }
+        }
+      });
+
+      // Update styling tab buttons
+      const navButtons = document.querySelectorAll('#main-tabs .tab-btn');
+      navButtons.forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabId) {
+          btn.className = 'tab-btn active-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-blue-700 bg-white shadow-xs border border-blue-200/60 font-semibold cursor-pointer';
+        } else {
+          btn.className = 'tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer';
+        }
+      });
+
+      // Re-render radar chart jika membuka tab RIASEC atau Resume
+      if (tabId === 'tab-riasec') {
+        setTimeout(renderRadarChart, 100);
+      } else if (tabId === 'tab-resume') {
+        updatePrintView();
+        setTimeout(renderPrintRadarChart, 100);
+      }
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==============================================================
+    // RENDER SEMUA MODUL & FORM
+    // ==============================================================
+    function renderAllTabs() {
+      renderStudentForm();
+      renderRiasecAnswers();
+      calculateRiasec(false);
+      renderPortfolioTable();
+      renderAspirationForm();
+      renderCounselorForm();
+      updateDashboardStats();
+      updatePrintView();
+    }
+
+    // 1. Data Siswa
+    function renderStudentForm() {
+      const s = appData.student || {};
+      document.getElementById('student_name').value = s.name || '';
+      document.getElementById('student_nisn').value = s.nisn || '';
+      document.getElementById('student_class').value = s.class || '';
+      document.getElementById('school_name').value = s.school || '';
+      document.getElementById('school_address').value = s.schoolAddress || '';
+      document.getElementById('school_year').value = s.schoolYear || '';
+      document.getElementById('student_ttl').value = s.ttl || '';
+      document.getElementById('student_gpa').value = s.gpa || '';
+      document.getElementById('parent_name').value = s.parentName || '';
+    }
+
+    function saveStudentInfo() {
+      appData.student = {
+        name: document.getElementById('student_name').value.trim(),
+        nisn: document.getElementById('student_nisn').value.trim(),
+        class: document.getElementById('student_class').value.trim(),
+        school: document.getElementById('school_name').value.trim(),
+        schoolAddress: document.getElementById('school_address').value.trim(),
+        schoolYear: document.getElementById('school_year').value.trim(),
+        ttl: document.getElementById('student_ttl').value.trim(),
+        gpa: parseFloat(document.getElementById('student_gpa').value) || 0,
+        parentName: document.getElementById('parent_name').value.trim()
+      };
+      saveDataToStorage(true);
+    }
+
+    // 2. Asesmen RIASEC (18 Butir)
+    function renderRiasecAnswers() {
+      const ans = appData.answers || {};
+      for (let i = 1; i <= 18; i++) {
+        const val = ans[`q${i}`];
+        if (val !== undefined && val !== null) {
+          const radio = document.getElementById(`q${i}_${val}`);
+          if (radio) radio.checked = true;
+        }
+      }
+    }
+
+    function handleAnswerChange() {
+      if (!appData.answers) appData.answers = {};
+      for (let i = 1; i <= 18; i++) {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selected) {
+          appData.answers[`q${i}`] = parseInt(selected.value, 10);
+        }
+      }
+      calculateRiasec(true);
+      saveDataToStorage(false);
+    }
+
+    function calculateRiasec(showFeedback = true) {
+      const ans = appData.answers || {};
+      
+      // Hitung per tipe: R (q1..q3), I (q4..q6), A (q7..q9), S (q10..q12), E (q13..q15), C (q16..q18)
+      const scores = {
+        R: (ans.q1 || 0) + (ans.q2 || 0) + (ans.q3 || 0),
+        I: (ans.q4 || 0) + (ans.q5 || 0) + (ans.q6 || 0),
+        A: (ans.q7 || 0) + (ans.q8 || 0) + (ans.q9 || 0),
+        S: (ans.q10 || 0) + (ans.q11 || 0) + (ans.q12 || 0),
+        E: (ans.q13 || 0) + (ans.q14 || 0) + (ans.q15 || 0),
+        C: (ans.q16 || 0) + (ans.q17 || 0) + (ans.q18 || 0)
+      };
+
+      // Hitung butir terjawab
+      let answeredCount = 0;
+      for (let i = 1; i <= 18; i++) {
+        if (ans[`q${i}`] !== undefined) answeredCount++;
+      }
+      const progressText = document.getElementById('riasec-progress-text');
+      if (progressText) progressText.innerText = `${answeredCount} dari 18 butir`;
+
+      // Update badge skor tiap dimensi
+      ['R', 'I', 'A', 'S', 'E', 'C'].forEach(dim => {
+        const val = scores[dim];
+        const badge = document.getElementById(`score-badge-${dim}`);
+        const scoreVal = document.getElementById(`score-val-${dim}`);
+        const barVal = document.getElementById(`bar-val-${dim}`);
+        
+        if (badge) badge.innerText = `Skor: ${val}/6`;
+        if (scoreVal) scoreVal.innerText = `${val}/6`;
+        if (barVal) barVal.style.width = `${(val / 6) * 100}%`;
+      });
+
+      // Urutkan untuk menghasilkan 3 Huruf Holland Code Dominan
+      const sortedDims = Object.keys(scores).sort((a, b) => scores[b] - scores[a]);
+      const hollandCode = sortedDims.slice(0, 3).join('');
+      appData.hollandCode = hollandCode;
+      appData.riasecScores = scores;
+
+      // Update tampilan deskripsi hasil asesmen
+      const resultBadge = document.getElementById('result-holland-badge');
+      if (resultBadge) resultBadge.innerText = hollandCode;
+
+      const profileTitle = document.getElementById('result-profile-title');
+      const profileDesc = document.getElementById('result-profile-desc');
+      const careerSuggestionsEl = document.getElementById('result-career-suggestions');
+
+      const top1 = RIASEC_PROFILES[sortedDims[0]];
+      const top2 = RIASEC_PROFILES[sortedDims[1]];
+      const top3 = RIASEC_PROFILES[sortedDims[2]];
+
+      if (profileTitle) {
+        profileTitle.innerText = `Tipe Profil Dominan: ${top1.name} - ${top2.name} - ${top3.name} (${hollandCode})`;
+      }
+      if (profileDesc) {
+        profileDesc.innerText = `Karakteristik kepribadian Anda dipimpin oleh dimensi ${top1.name} (${top1.title.toLowerCase()}) yang didukung oleh sifat ${top2.name} dan ${top3.name}. ${top1.desc} ${top2.desc}`;
+      }
+
+      if (careerSuggestionsEl) {
+        careerSuggestionsEl.innerHTML = `
+          <div class="p-2.5 rounded-lg bg-white border border-blue-200">
+            <span class="font-bold text-blue-900 block mb-1">Rumpun Utama (${top1.name}):</span>
+            <ul class="space-y-0.5 text-slate-700">
+              ${top1.careers.slice(0, 3).map(c => `<li>• ${c}</li>`).join('')}
+            </ul>
+          </div>
+          <div class="p-2.5 rounded-lg bg-white border border-blue-200">
+            <span class="font-bold text-blue-900 block mb-1">Pendukung 1 (${top2.name}):</span>
+            <ul class="space-y-0.5 text-slate-700">
+              ${top2.careers.slice(0, 3).map(c => `<li>• ${c}</li>`).join('')}
+            </ul>
+          </div>
+          <div class="p-2.5 rounded-lg bg-white border border-blue-200">
+            <span class="font-bold text-blue-900 block mb-1">Pendukung 2 (${top3.name}):</span>
+            <ul class="space-y-0.5 text-slate-700">
+              ${top3.careers.slice(0, 3).map(c => `<li>• ${c}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      renderRadarChart();
+      updateDashboardStats();
+      if (showFeedback && answeredCount === 18) {
+        showNotification(`Skor Holland Code (${hollandCode}) berhasil dihitung!`, 'success');
+      }
+    }
+
+    // Render Radar Chart interaktif via Chart.js
+    function renderRadarChart() {
+      const ctx = document.getElementById('riasecRadarChart');
+      if (!ctx) return;
+
+      const scores = appData.riasecScores || { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+      const dataValues = [scores.R, scores.I, scores.A, scores.S, scores.E, scores.C];
+
+      if (radarChartInstance) {
+        radarChartInstance.destroy();
+      }
+
+      radarChartInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ['Realistic (R)', 'Investigative (I)', 'Artistic (A)', 'Social (S)', 'Enterprising (E)', 'Conventional (C)'],
+          datasets: [{
+            label: 'Skor Dimensi Siswa',
+            data: dataValues,
+            fill: true,
+            backgroundColor: 'rgba(37, 99, 235, 0.22)',
+            borderColor: '#2563eb',
+            pointBackgroundColor: '#1d4ed8',
+            pointBorderColor: '#ffffff',
+            pointHoverBackgroundColor: '#ffffff',
+            pointHoverBorderColor: '#1d4ed8',
+            pointRadius: 4,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          scales: {
+            r: {
+              angleLines: { color: '#e2e8f0' },
+              grid: { color: '#e2e8f0' },
+              suggestedMin: 0,
+              suggestedMax: 6,
+              ticks: {
+                stepSize: 1,
+                font: { size: 9 },
+                backdropColor: 'transparent'
+              },
+              pointLabels: {
+                font: {
+                  size: 11,
+                  weight: 'bold',
+                  family: '"Plus Jakarta Sans", sans-serif'
+                },
+                color: '#1e293b'
+              }
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    // Render Radar Chart untuk Lembar Resume Cetak
+    function renderPrintRadarChart() {
+      const ctx = document.getElementById('riasecPrintRadarChart');
+      if (!ctx) return;
+
+      const scores = appData.riasecScores || { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+      const dataValues = [scores.R, scores.I, scores.A, scores.S, scores.E, scores.C];
+
+      if (radarPrintChartInstance) {
+        radarPrintChartInstance.destroy();
+      }
+
+      radarPrintChartInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ['R', 'I', 'A', 'S', 'E', 'C'],
+          datasets: [{
+            label: 'Holland',
+            data: dataValues,
+            fill: true,
+            backgroundColor: 'rgba(37, 99, 235, 0.25)',
+            borderColor: '#1d4ed8',
+            pointBackgroundColor: '#1d4ed8',
+            pointRadius: 3,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              suggestedMin: 0,
+              suggestedMax: 6,
+              ticks: { display: false },
+              pointLabels: {
+                font: { size: 10, weight: 'bold' },
+                color: '#0f172a'
+              }
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    // 3. Brankas Portofolio
+    function renderPortfolioTable() {
+      const tbody = document.getElementById('portfolio-table-body');
+      const emptyState = document.getElementById('portfolio-empty-state');
+      const totalLabel = document.getElementById('portfolio-total-label');
+      const badgeCount = document.getElementById('badge-portofolio-count');
+      
+      const list = appData.portfolio || [];
+      if (totalLabel) totalLabel.innerText = list.length;
+      if (badgeCount) badgeCount.innerText = list.length;
+
+      const filtered = activePortfolioFilter === 'all' 
+        ? list 
+        : list.filter(item => item.category === activePortfolioFilter);
+
+      if (filtered.length === 0) {
+        if (tbody) tbody.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
+        return;
+      }
+
+      if (emptyState) emptyState.classList.add('hidden');
+
+      if (tbody) {
+        tbody.innerHTML = filtered.map(item => {
+          let badgeCatColor = 'bg-slate-100 text-slate-700';
+          if (item.category.includes('Akademik')) badgeCatColor = 'bg-blue-100 text-blue-700 border border-blue-200';
+          else if (item.category.includes('Organisasi')) badgeCatColor = 'bg-purple-100 text-purple-700 border border-purple-200';
+          else if (item.category.includes('Kreatif')) badgeCatColor = 'bg-amber-100 text-amber-700 border border-amber-200';
+
+          return `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="px-5 py-3 font-semibold text-slate-900">
+                <div class="flex items-center gap-2">
+                  <span>${escapeHtml(item.title)}</span>
+                  ${item.url ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800" title="Buka Dokumen Bukti"><i data-lucide="external-link" class="w-3.5 h-3.5"></i></a>` : ''}
+                </div>
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-medium ${badgeCatColor}">
+                  ${escapeHtml(item.category)}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-xs font-medium text-slate-600">${escapeHtml(item.level)}</td>
+              <td class="px-3 py-3 text-center text-xs font-mono font-semibold">${item.year}</td>
+              <td class="px-4 py-3">
+                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <i data-lucide="check-check" class="w-3 h-3 text-emerald-600"></i> Terverifikasi BK
+                </span>
+              </td>
+              <td class="px-4 py-3 text-center">
+                <button onclick="deletePortfolioItem('${item.id}')" class="p-1.5 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition cursor-pointer" title="Hapus Portofolio">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      lucide.createIcons();
+    }
+
+    function addPortfolioItem() {
+      const title = document.getElementById('port_title').value.trim();
+      const category = document.getElementById('port_category').value;
+      const level = document.getElementById('port_level').value;
+      const year = parseInt(document.getElementById('port_year').value, 10) || new Date().getFullYear();
+      const url = document.getElementById('port_url').value.trim();
+
+      if (!title) {
+        showNotification('Nama capaian/prestasi wajib diisi!', 'warning');
+        return;
+      }
+
+      const newItem = {
+        id: 'port-' + Date.now(),
+        title,
+        category,
+        level,
+        year,
+        url,
+        verified: true
+      };
+
+      if (!appData.portfolio) appData.portfolio = [];
+      appData.portfolio.unshift(newItem);
+
+      // Reset form
+      document.getElementById('port_title').value = '';
+      document.getElementById('port_url').value = '';
+
+      saveDataToStorage(true);
+      renderPortfolioTable();
+    }
+
+    function deletePortfolioItem(id) {
+      if (confirm('Hapus berkas portofolio ini dari brankas?')) {
+        appData.portfolio = (appData.portfolio || []).filter(item => item.id !== id);
+        saveDataToStorage(true);
+        renderPortfolioTable();
+      }
+    }
+
+    function filterPortfolio(cat) {
+      activePortfolioFilter = cat;
+      const btns = document.querySelectorAll('.port-filter-btn');
+      btns.forEach(b => {
+        if (b.innerText.toLowerCase().includes(cat.toLowerCase()) || (cat === 'all' && b.innerText === 'Semua')) {
+          b.className = 'port-filter-btn px-2.5 py-1 rounded-md bg-blue-100 text-blue-700 font-semibold cursor-pointer';
+        } else {
+          b.className = 'port-filter-btn px-2.5 py-1 rounded-md text-slate-600 hover:bg-slate-200 cursor-pointer';
+        }
+      });
+      renderPortfolioTable();
+    }
+
+    // 4. Konsultasi & Rekomendasi Guru BK
+    function renderAspirationForm() {
+      const asp = appData.aspiration || {};
+      document.getElementById('target_choice_1').value = asp.choice1 || '';
+      document.getElementById('target_choice_2').value = asp.choice2 || '';
+      document.getElementById('target_career_dream').value = asp.careerDream || '';
+    }
+
+    function saveAspiration() {
+      appData.aspiration = {
+        choice1: document.getElementById('target_choice_1').value.trim(),
+        choice2: document.getElementById('target_choice_2').value.trim(),
+        careerDream: document.getElementById('target_career_dream').value.trim()
+      };
+      saveDataToStorage(true);
+    }
+
+    function renderCounselorForm() {
+      const c = appData.counselor || {};
+      document.getElementById('counselor_status').value = c.status || 'Sangat Direkomendasikan (Sesuai Minat & Bakat)';
+      document.getElementById('counselor_notes').value = c.notes || '';
+      document.getElementById('counselor_date').value = c.date || new Date().toISOString().split('T')[0];
+      document.getElementById('counselor_name').value = c.name || '';
+      document.getElementById('counselor_nip').value = c.nip || '';
+    }
+
+    function saveCounselorNotes() {
+      appData.counselor = {
+        status: document.getElementById('counselor_status').value,
+        notes: document.getElementById('counselor_notes').value.trim(),
+        date: document.getElementById('counselor_date').value,
+        name: document.getElementById('counselor_name').value.trim(),
+        nip: document.getElementById('counselor_nip').value.trim()
+      };
+      saveDataToStorage(true);
+    }
+
+    // 5. Dashboard Stats & Print View Updates
+    function updateDashboardStats() {
+      const hollandCode = appData.hollandCode || '-';
+      const portCount = (appData.portfolio || []).length;
+      const gpa = (appData.student && appData.student.gpa) ? Number(appData.student.gpa).toFixed(2) : '0.00';
+      const bkStatus = (appData.counselor && appData.counselor.status) ? appData.counselor.status.split(' ')[0] : 'Aktif';
+
+      const statCode = document.getElementById('stat-holland-code');
+      const statPort = document.getElementById('stat-portfolio-count');
+      const statGpa = document.getElementById('stat-gpa');
+      const statBk = document.getElementById('stat-bk-status');
+
+      if (statCode) statCode.innerText = hollandCode;
+      if (statPort) statPort.innerText = `${portCount} Berkas`;
+      if (statGpa) statGpa.innerText = gpa;
+      if (statBk) statBk.innerText = bkStatus;
+    }
+
+    function updatePrintView() {
+      const s = appData.student || {};
+      const c = appData.counselor || {};
+      const a = appData.aspiration || {};
+      const hollandCode = appData.hollandCode || 'RIA';
+
+      // Header Kop
+      setText('print-school-name', s.school || 'SMA NEGERI 1 PRESTASI BANGSA');
+      setText('print-school-address', s.schoolAddress || 'Jl. Pemuda No. 45, Kota Yogyakarta');
+      setText('print-school-year', s.schoolYear || '2025/2026');
+
+      // Data Siswa
+      setText('print-student-name', s.name || '-');
+      setText('print-student-nisn', s.nisn || '-');
+      setText('print-student-class', s.class || '-');
+      setText('print-student-ttl', s.ttl || '-');
+      setText('print-student-gpa', `${s.gpa || 0} / 100`);
+      setText('print-parent-name', s.parentName || '-');
+
+      // RIASEC
+      setText('print-holland-code', hollandCode);
+      const sortedDims = hollandCode.split('');
+      const top1 = RIASEC_PROFILES[sortedDims[0]] || RIASEC_PROFILES['R'];
+      const top2 = RIASEC_PROFILES[sortedDims[1]] || RIASEC_PROFILES['I'];
+      const top3 = RIASEC_PROFILES[sortedDims[2]] || RIASEC_PROFILES['A'];
+
+      setText('print-profile-desc', `Menunjukkan profil minat dominan ${top1.name} (${top1.title}), diperkuat oleh ${top2.name} dan ${top3.name}. Siswa memiliki daya adaptasi kuat pada ${top1.desc.toLowerCase()}`);
+      setText('print-career-clusters', `1. ${top1.careers.slice(0, 2).join(' & ')} • 2. ${top2.careers.slice(0, 2).join(' & ')} • 3. ${top3.careers.slice(0, 2).join(' & ')}`);
+
+      // Top 3 Portofolio
+      const topPortEl = document.getElementById('print-top-portfolio-list');
+      const portList = (appData.portfolio || []).slice(0, 3);
+      if (topPortEl) {
+        if (portList.length === 0) {
+          topPortEl.innerHTML = '<p class="text-slate-400 italic">Belum ada portofolio capaian yang didaftarkan.</p>';
+        } else {
+          topPortEl.innerHTML = portList.map((item, idx) => `
+            <div class="flex items-start justify-between p-2 rounded-lg bg-slate-50 border border-slate-200">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-slate-700">${idx + 1}.</span>
+                <div>
+                  <p class="font-bold text-slate-900">${escapeHtml(item.title)}</p>
+                  <p class="text-[10px] text-slate-500">${escapeHtml(item.category)} • Tingkat ${escapeHtml(item.level)} (${item.year})</p>
+                </div>
+              </div>
+              <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Terverifikasi</span>
+            </div>
+          `).join('');
+        }
+      }
+
+      // Aspirasi vs Rekomendasi BK
+      setText('print-choice-1', a.choice1 || 'Belum diisi');
+      setText('print-choice-2', a.choice2 || 'Belum diisi');
+      setText('print-career-dream', a.careerDream || 'Belum diisi');
+
+      setText('print-counselor-status', c.status || 'Sangat Direkomendasikan');
+      setText('print-counselor-notes', `"${c.notes || 'Rekomendasi resmi berdasarkan komparasi asesmen holistik BK.'}"`);
+
+      // Tanda Tangan
+      const dateFormatted = c.date ? formatDateIndo(c.date) : '16 Oktober 2026';
+      setText('print-loc-date', `Yogyakarta, ${dateFormatted}`);
+      setText('print-sign-student', s.name || 'Nama Siswa');
+      setText('print-sign-parent', s.parentName || 'Nama Orang Tua / Wali');
+      setText('print-sign-counselor', c.name || 'Konselor Bimbingan Konseling');
+      setText('print-sign-nip', c.nip || '-');
+
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    }
+
+    function setText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = text;
+    }
+
+    function formatDateIndo(dateStr) {
+      try {
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+          const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+          const day = parseInt(parts[2], 10);
+          const month = months[parseInt(parts[1], 10) - 1];
+          const year = parts[0];
+          return `${day} ${month} ${year}`;
+        }
+      } catch (e) {}
+      return dateStr;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // ==============================================================
+    // FITUR EKSPOR HTML TUNGGAL (SINGLE FILE EXPORT)
+    // ==============================================================
+    function exportSingleFileHtml() {
+      // Dapatkan seluruh isi dokumen saat ini
+      const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `SIM-BK-Portofolio-${(appData.student && appData.student.name ? appData.student.name.replace(/\s+/g, '_') : 'Siswa')}.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showNotification('Berkas Single-File HTML berhasil diunduh! Siap dibuka offline atau di-hosting.', 'success');
+    }
+
+    // ==============================================================
+    // EVENT LISTENERS & NOTIFIKASI TOAST
+    // ==============================================================
+    function setupEventListeners() {
+      // Tombol Tab Navigasi
+      const tabBtns = document.querySelectorAll('#main-tabs .tab-btn');
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tabId = btn.getAttribute('data-tab');
+          switchTab(tabId);
+        });
+      });
+
+      // Quick Action Buttons Header
+      document.getElementById('btn-demo-data')?.addEventListener('click', resetDemoData);
+      document.getElementById('btn-save-all')?.addEventListener('click', () => {
+        saveStudentInfo();
+        saveAspiration();
+        saveCounselorNotes();
+        showNotification('Semua data portofolio dan bimbingan tersimpan!', 'success');
+      });
+      document.getElementById('btn-export-file')?.addEventListener('click', exportSingleFileHtml);
+      document.getElementById('btn-print-top')?.addEventListener('click', () => {
+        switchTab('tab-resume');
+        setTimeout(() => window.print(), 350);
+      });
+    }
+
+    function showNotification(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      let bgColor = 'bg-slate-900 text-white';
+      let icon = 'info';
+
+      if (type === 'success') {
+        bgColor = 'bg-emerald-600 text-white';
+        icon = 'check-circle-2';
+      } else if (type === 'warning') {
+        bgColor = 'bg-amber-600 text-white';
+        icon = 'alert-triangle';
+      }
+
+      toast.className = `flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-xl ${bgColor} text-xs font-semibold transform transition-all duration-300 opacity-0 translate-y-2 pointer-events-auto`;
+      toast.innerHTML = `
+        <i data-lucide="${icon}" class="w-4 h-4 shrink-0"></i>
+        <span>${escapeHtml(message)}</span>
+      `;
+
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      // Animasi masuk
+      setTimeout(() => {
+        toast.classList.remove('opacity-0', 'translate-y-2');
+      }, 10);
+
+      // Otomatis hilang setelah 3.5 detik
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => {
+          if (toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 300);
+      }, 3500);
+    }
+
+    // Jalankan aplikasi saat DOM siap
+    document.addEventListener('DOMContentLoaded', () => {
+      initApp();
+    });
+  </script>
+</body>
+</html>

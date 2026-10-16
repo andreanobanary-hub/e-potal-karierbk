@@ -1,0 +1,6 @@
+{
+  "name": "SIM-BK: E-Portofolio Karier & Peminatan Siswa Terpadu",
+  "description": "Sistem Informasi Bimbingan Konseling (SIM-BK) untuk E-Portofolio Karier, Asesmen Minat Holland RIASEC, Brankas Prestasi, dan Konsultasi Peminatan Siswa.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
