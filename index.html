@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SIM-BK: E-Portofolio Karier & Peminatan Siswa Terpadu</title>
-  <meta name="description" content="Sistem Informasi Bimbingan Konseling (SIM-BK) untuk E-Portofolio Karier, Asesmen Minat Holland RIASEC, Brankas Prestasi, dan Konsultasi Peminatan Siswa terintegrasi Google Sheets.">
+  <title>SIM-BK: E-Portofolio Karier & Peminatan Siswa Terpadu - SMP Negeri 2 Pekuncen</title>
+  <meta name="description" content="Sistem Informasi Bimbingan Konseling (SIM-BK) untuk E-Portofolio Karier, Asesmen Minat Holland RIASEC, Brankas Prestasi, dan Konsultasi Peminatan Siswa SMP Negeri 2 Pekuncen.">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -94,9 +94,11 @@
       body {
         background-color: #ffffff !important;
         color: #000000 !important;
-        font-size: 11pt !important;
+        font-size: 10pt !important;
         padding: 0 !important;
         margin: 0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
 
       /* Sembunyikan elemen non-cetak */
@@ -128,10 +130,17 @@
         page-break-after: always;
       }
 
+      /* Logo Cetak Tetap Tajam */
+      img {
+        max-width: 100% !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
       /* Optimasi chart untuk print */
       canvas {
-        max-width: 220px !important;
-        max-height: 220px !important;
+        max-width: 210px !important;
+        max-height: 210px !important;
       }
     }
   </style>
@@ -153,7 +162,7 @@
               <span class="font-extrabold text-lg tracking-tight text-slate-900">SIM-BK</span>
               <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-semibold border border-blue-200 flex items-center gap-1">
                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                Cloud Sheets Sync
+                SMPN 2 Pekuncen
               </span>
             </div>
             <p class="text-xs text-slate-500 hidden sm:block">E-Portofolio Karier & Peminatan Siswa Berbasis Holland RIASEC</p>
@@ -234,11 +243,11 @@
         <div class="relative z-10 max-w-2xl">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-semibold mb-3">
             <i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i>
-            Bimbingan Karier & Peminatan Terpadu • Google Sheets Connected
+            SMP NEGERI 2 PEKUNCEN • Google Sheets Connected
           </div>
           <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Selamat Datang di Portal E-Portofolio Siswa</h1>
           <p class="mt-2 text-sm sm:text-base text-slate-300 leading-relaxed">
-            Platform konseling digital terpadu untuk memetakan minat kepribadian (Holland RIASEC), mencatat rekam jejak portofolio, dan mengirim data langsung ke database Google Sheets Guru BK.
+            Platform konseling digital bimbingan karier terpadu untuk memetakan minat kepribadian (Holland RIASEC), merekam portofolio prestasi, dan menentukan pilihan peminatan studi lanjut siswa SMP Negeri 2 Pekuncen.
           </p>
           <div class="mt-4 flex flex-wrap gap-3">
             <button onclick="switchTab('tab-riasec')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-medium text-sm transition shadow-md shadow-blue-500/30 cursor-pointer">
@@ -248,11 +257,10 @@
               <i data-lucide="table" class="w-4 h-4"></i> Rekapitulasi Data Siswa (Cloud)
             </button>
             <button onclick="switchTab('tab-resume')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-sm border border-white/20 transition cursor-pointer">
-              <i data-lucide="file-check-2" class="w-4 h-4"></i> Pratinjau Lembar Cetak
+              <i data-lucide="file-check-2" class="w-4 h-4"></i> Pratinjau Lembar Cetak Resmi
             </button>
           </div>
         </div>
-        <!-- Decorative Circle Background -->
         <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
       </div>
 
@@ -306,7 +314,7 @@
             <i data-lucide="user" class="w-5 h-5 text-blue-600"></i>
             <h2 class="text-base font-bold text-slate-900">Identitas Diri & Satuan Pendidikan Siswa</h2>
           </div>
-          <span class="text-xs text-slate-500">NISN digunakan sebagai kunci utama rekaman cloud</span>
+          <span class="text-xs text-slate-500">SMP Negeri 2 Pekuncen, Kab. Banyumas</span>
         </div>
 
         <div class="p-6">
@@ -319,34 +327,34 @@
 
             <div>
               <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">NISN / Nomor Induk *</label>
-              <input type="text" id="student_nisn" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition font-mono" placeholder="0067891234">
+              <input type="text" id="student_nisn" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition font-mono" placeholder="0089123456">
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Kelas & Peminatan *</label>
-              <input type="text" id="student_class" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="XII MIPA 1">
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Kelas *</label>
+              <input type="text" id="student_class" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="IX A">
             </div>
 
             <!-- Kolom 2 -->
             <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Satuan Pendidikan (Nama Sekolah)</label>
-              <input type="text" id="school_name" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="SMA Negeri 1 Prestasi Bangsa">
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Satuan Pendidikan</label>
+              <input type="text" id="school_name" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-slate-50" value="SMP NEGERI 2 PEKUNCEN">
             </div>
 
             <div>
               <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Alamat Satuan Pendidikan</label>
-              <input type="text" id="school_address" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="Jl. Pemuda No. 45, Kota Yogyakarta">
+              <input type="text" id="school_address" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-slate-50" value="Jalan Raya Cikawung-Pekuncen, Kabupaten Banyumas">
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Tahun Ajaran / Angkatan</label>
-              <input type="text" id="school_year" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="2025/2026">
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Tahun Pelajaran</label>
+              <input type="text" id="school_year" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" value="2025/2026">
             </div>
 
             <!-- Kolom 3 -->
             <div>
               <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Tempat & Tanggal Lahir</label>
-              <input type="text" id="student_ttl" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="Yogyakarta, 15 Mei 2008">
+              <input type="text" id="student_ttl" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="Banyumas, 14 Mei 2011">
             </div>
 
             <div>
@@ -381,11 +389,11 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-indigo-50 text-indigo-700 text-xs font-semibold border border-indigo-200 mb-1.5">
-              <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Model Teori John L. Holland (RIASEC)
+              <i data-lucide="help-circle" class="w-3.5 h-3.5"></i> Model Teori John L. Holland (RIASEC) - Jenjang SMP
             </div>
-            <h2 class="text-xl font-bold text-slate-900">Inventori Minat Karier & Bakat Siswa (18 Butir)</h2>
+            <h2 class="text-xl font-bold text-slate-900">Inventori Minat Peminatan Karier Siswa (18 Butir)</h2>
             <p class="text-sm text-slate-500 mt-1">
-              Jawablah 18 butir pernyataan di bawah ini. Pilihlah:
+              Jawablah 18 butir pernyataan di bawah ini secara jujur sesuai minat alamiahmu. Pilihlah:
               <span class="font-medium text-slate-700">0 (Tidak Suka)</span>, 
               <span class="font-medium text-slate-700">1 (Ragu-ragu / Netral)</span>, atau 
               <span class="font-medium text-slate-700">2 (Suka / Sangat Cocok)</span>.
@@ -414,7 +422,7 @@
               <span class="w-7 h-7 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center">R</span>
               <div>
                 <h3 class="text-sm font-bold text-slate-900">Dimensi REALISTIC (Praktis, Alat & Fisik)</h3>
-                <p class="text-xs text-slate-500">Menyukai aktivitas hands-on, peralatan mesin, konstruksi, dan lapangan terbuka.</p>
+                <p class="text-xs text-slate-500">Menyukai kegiatan praktek fisik, perkakas mesin, perakitan elektronik, atau kegiatan lapangan.</p>
               </div>
             </div>
             <span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full" id="score-badge-R">Skor: 0/6</span>
@@ -552,7 +560,7 @@
             <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div class="flex-1">
                 <span class="text-xs font-bold text-slate-400 mr-1.5">#06</span>
-                <span class="text-sm text-slate-800 font-medium">Membaca jurnal penelitian, menganalisis grafik statistik, dan mencari argumen ilmiah objektif di balik suatu topik permasalahan.</span>
+                <span class="text-sm text-slate-800 font-medium">Membaca buku sains populer, menganalisis grafik statistik, dan mencari alasan ilmiah objektif di balik suatu fenomena.</span>
               </div>
               <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
                 <div class="relative">
@@ -580,7 +588,7 @@
               <span class="w-7 h-7 rounded-lg bg-purple-600 text-white font-bold text-xs flex items-center justify-center">A</span>
               <div>
                 <h3 class="text-sm font-bold text-slate-900">Dimensi ARTISTIC (Kreativitas, Seni & Desain)</h3>
-                <p class="text-xs text-slate-500">Menyukai ekspresi orisinal, visual estetis, musik, penulisan, dan kebebasan kreasi.</p>
+                <p class="text-xs text-slate-500">Menyukai ekspresi bebas, karya seni visual/audio orisinal, desain grafis, sastra, dan kreasi.</p>
               </div>
             </div>
             <span class="text-xs font-semibold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-full" id="score-badge-A">Skor: 0/6</span>
@@ -591,7 +599,7 @@
             <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div class="flex-1">
                 <span class="text-xs font-bold text-slate-400 mr-1.5">#07</span>
-                <span class="text-sm text-slate-800 font-medium">Menggambar sketsa, membuat desain grafis, ilustrasi digital, atau merancang tata ruang yang bernilai estetika tinggi.</span>
+                <span class="text-sm text-slate-800 font-medium">Menggambar sketsa, membuat desain grafis, ilustrasi digital, atau merancang karya kerajinan tangan bernilai estetika.</span>
               </div>
               <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
                 <div class="relative">
@@ -613,7 +621,7 @@
             <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div class="flex-1">
                 <span class="text-xs font-bold text-slate-400 mr-1.5">#08</span>
-                <span class="text-sm text-slate-800 font-medium">Menulis cerita fiksi, puisi/naskah, memainkan alat musik, atau memproduksi karya sinematografi/video kreatif.</span>
+                <span class="text-sm text-slate-800 font-medium">Menulis cerita pendek, puisi, memainkan alat musik, bernyanyi, atau mengedit konten video kreatif.</span>
               </div>
               <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
                 <div class="relative">
@@ -779,7 +787,7 @@
             <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div class="flex-1">
                 <span class="text-xs font-bold text-slate-400 mr-1.5">#14</span>
-                <span class="text-sm text-slate-800 font-medium">Menjadi ketua kelompok, pengurus OSIS/MPK, atau pemimpin yang mengambil keputusan strategis di saat kritis.</span>
+                <span class="text-sm text-slate-800 font-medium">Menjadi ketua kelompok, pengurus OSIS/Pramuka, atau pemimpin yang berani mengambil keputusan di saat darurat.</span>
               </div>
               <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
                 <div class="relative">
@@ -801,7 +809,7 @@
             <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div class="flex-1">
                 <span class="text-xs font-bold text-slate-400 mr-1.5">#15</span>
-                <span class="text-sm text-slate-800 font-medium">Menyusun agenda acara besar, bernegosiasi dengan sponsor, dan menggerakkan tim untuk mencapai target yang tinggi.</span>
+                <span class="text-sm text-slate-800 font-medium">Menyusun agenda acara besar sekolah, bernegosiasi, dan menggerakkan teman-teman untuk mencapai target bersama.</span>
               </div>
               <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
                 <div class="relative">
@@ -840,7 +848,7 @@
             <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div class="flex-1">
                 <span class="text-xs font-bold text-slate-400 mr-1.5">#16</span>
-                <span class="text-sm text-slate-800 font-medium">Merapikan dokumen fisik, menata folder komputer secara terstruktur rapi, dan memberi label jelas agar cepat ditemukan.</span>
+                <span class="text-sm text-slate-800 font-medium">Merapikan dokumen fisik, menata folder tugas komputer secara terstruktur rapi, dan memberi label yang jelas.</span>
               </div>
               <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
                 <div class="relative">
@@ -862,7 +870,7 @@
             <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div class="flex-1">
                 <span class="text-xs font-bold text-slate-400 mr-1.5">#17</span>
-                <span class="text-sm text-slate-800 font-medium">Mencatat pembukuan keuangan kas organisasi, memeriksa nota kwitansi, dan menghitung rincian anggaran secara akurat.</span>
+                <span class="text-sm text-slate-800 font-medium">Mencatat pembukuan keuangan kas kelas/organisasi, mencatat nota kwitansi, dan menghitung rincian anggaran akurat.</span>
               </div>
               <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
                 <div class="relative">
@@ -884,7 +892,7 @@
             <div class="py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div class="flex-1">
                 <span class="text-xs font-bold text-slate-400 mr-1.5">#18</span>
-                <span class="text-sm text-slate-800 font-medium">Bekerja dengan mengikuti petunjuk operasional standar (SOP), checklist tugas, dan jadwal kerja yang pasti serta konsisten.</span>
+                <span class="text-sm text-slate-800 font-medium">Bekerja dengan mengikuti petunjuk operasional standar (SOP), checklist tugas, dan jadwal belajar yang pasti serta konsisten.</span>
               </div>
               <div class="flex items-center gap-1.5 sm:shrink-0 option-pill">
                 <div class="relative">
@@ -911,7 +919,7 @@
       <div id="riasec-results-card" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200 gap-4">
           <div>
-            <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Hasil Diagnosis Psikometri Minat</span>
+            <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Hasil Diagnosis Psikometri Minat Siswa SMP</span>
             <h3 class="text-xl font-extrabold text-slate-900 mt-0.5">Analisis Profil Holland & Peta Radar RIASEC</h3>
           </div>
           <div class="flex items-center gap-3">
@@ -950,7 +958,7 @@
             <div class="bg-blue-50/50 rounded-xl p-4 border border-blue-100">
               <h5 class="text-xs font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1.5 mb-2.5">
                 <i data-lucide="compass" class="w-4 h-4 text-blue-600"></i>
-                Rekomendasi Rumpun Peminatan & Program Studi Lanjut:
+                Rekomendasi Peminatan Studi Lanjut (SMA/MA/SMK) & Karier:
               </h5>
               <div id="result-career-suggestions" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
                 <!-- Injected via JS -->
@@ -1022,7 +1030,7 @@
 
             <div class="pt-2 flex justify-between items-center">
               <span class="text-xs text-slate-500">
-                💡 <span class="font-medium">Tips:</span> Pastikan data aspirasi di tab Rekomendasi BK sudah terisi sebelum dikirim.
+                💡 <span class="font-medium">Catatan:</span> Pastikan data aspirasi di tab 4 sudah lengkap sebelum dikirim ke database.
               </span>
               <button onclick="switchTab('tab-portofolio')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-800 transition cursor-pointer">
                 Lanjut ke Portofolio Prestasi <i data-lucide="arrow-right" class="w-4 h-4"></i>
@@ -1048,7 +1056,7 @@
             <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
               <i data-lucide="folder-lock" class="w-5 h-5 text-amber-500"></i> Brankas Rekam Jejak & Portofolio Siswa
             </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Catat seluruh prestasi, organisasi, sertifikasi, & karya portofolio. Terkirim ke Google Sheets.</p>
+            <p class="text-xs text-slate-500 mt-0.5">Catat seluruh prestasi, organisasi, sertifikasi, & karya portofolio siswa SMP Negeri 2 Pekuncen.</p>
           </div>
           <span class="text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg self-start sm:self-auto">
             Total Karya: <strong id="portfolio-total-label" class="text-slate-800">0</strong> Capaian
@@ -1059,7 +1067,7 @@
         <form id="form-portfolio" class="mt-5 grid grid-cols-1 md:grid-cols-4 gap-4" onsubmit="event.preventDefault(); simpanPortofolioHandler();">
           <div class="md:col-span-2">
             <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Capaian / Lomba / Proyek Karya *</label>
-            <input type="text" id="port_title" required class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: Juara 2 Lomba Karya Tulis Ilmiah Remaja (LKIR)">
+            <input type="text" id="port_title" required class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: Juara 2 Lomba Cerdas Cermat Tingkat Sub Rayon Ajibarang">
           </div>
 
           <div>
@@ -1075,11 +1083,11 @@
           <div>
             <label class="block text-xs font-semibold text-slate-700 mb-1">Tingkat Capaian *</label>
             <select id="port_level" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
-              <option value="Sekolah">Tingkat Satuan Pendidikan (Sekolah)</option>
-              <option value="Kabupaten/Kota">Tingkat Kabupaten / Kota</option>
-              <option value="Provinsi">Tingkat Provinsi</option>
+              <option value="Sekolah">Tingkat Sekolah</option>
+              <option value="Kecamatan / Sub Rayon">Tingkat Kecamatan / Sub Rayon</option>
+              <option value="Kabupaten Banyumas">Tingkat Kabupaten Banyumas</option>
+              <option value="Provinsi Jawa Tengah">Tingkat Provinsi Jawa Tengah</option>
               <option value="Nasional">Tingkat Nasional</option>
-              <option value="Internasional">Tingkat Internasional</option>
             </select>
           </div>
 
@@ -1089,8 +1097,8 @@
           </div>
 
           <div class="md:col-span-2">
-            <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan Bukti Sertifikat / Portofolio Karya (URL/Drive)</label>
-            <input type="text" id="port_url" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="https://drive.google.com/... atau https://github.com/...">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tautan Bukti Sertifikat / Dokumen (Drive / Cloud)</label>
+            <input type="text" id="port_url" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="https://drive.google.com/...">
           </div>
 
           <div class="flex items-end">
@@ -1159,32 +1167,32 @@
         <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-xs p-6 space-y-4">
           <div class="pb-3 border-b border-slate-200">
             <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Aspirasi Mandiri Siswa</span>
-            <h3 class="text-base font-bold text-slate-900 mt-0.5">Target Peminatan & Karier Impian</h3>
-            <p class="text-xs text-slate-500">Isikan rencana studi lanjut yang diminati oleh siswa bersangkutan.</p>
+            <h3 class="text-base font-bold text-slate-900 mt-0.5">Target Peminatan SMA/SMK & Karier</h3>
+            <p class="text-xs text-slate-500">Rencana studi lanjut setelah lulus dari SMP Negeri 2 Pekuncen.</p>
           </div>
 
           <div class="space-y-4 pt-1">
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Target Jurusan / Sekolah Pilihan 1 *</label>
-              <input type="text" id="target_choice_1" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: S1 Teknik Informatika (ITB / UI)">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Target Sekolah & Jurusan Lanjutan Pilihan 1 *</label>
+              <input type="text" id="target_choice_1" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: SMA Negeri 1 Ajibarang (Peminatan MIPA / Sains)">
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Target Jurusan / Sekolah Pilihan 2</label>
-              <input type="text" id="target_choice_2" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: S1 Ilmu Komputer / Sistem Informasi (UGM / ITS)">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Target Sekolah & Jurusan Lanjutan Pilihan 2</label>
+              <input type="text" id="target_choice_2" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: SMK Negeri 1 Purwokerto (Rekayasa Perangkat Lunak)">
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Cita-Cita Karier / Profesi Idaman *</label>
-              <input type="text" id="target_career_dream" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: Software Architect & AI Researcher">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Cita-Cita Karier / Profesi Impian *</label>
+              <input type="text" id="target_career_dream" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: Software Engineer & Teknisi Komputer">
             </div>
 
             <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs space-y-1.5">
               <span class="font-bold text-slate-700 flex items-center gap-1.5">
-                <i data-lucide="info" class="w-3.5 h-3.5 text-blue-600"></i> Panduan Penyelarasan:
+                <i data-lucide="info" class="w-3.5 h-3.5 text-blue-600"></i> Penyelarasan Peminatan:
               </span>
               <p class="text-slate-600 leading-relaxed">
-                Pilihan peminatan ini juga otomatis terkirim ke Google Sheets saat Anda mengklik "Simpan & Kirim Hasil Asesmen" di Tab Asesmen RIASEC.
+                Pilihan peminatan ini akan dikomparasikan dengan nilai rapor siswa dan hasil asesmen minat Holland RIASEC dalam bimbingan konseling.
               </p>
             </div>
 
@@ -1199,7 +1207,7 @@
           <div class="pb-3 border-b border-slate-200 flex items-center justify-between">
             <div>
               <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">Otoritas Bimbingan Konseling</span>
-              <h3 class="text-base font-bold text-slate-900 mt-0.5">Lembar Rekomendasi & Catatan Konselor BK</h3>
+              <h3 class="text-base font-bold text-slate-900 mt-0.5">Lembar Rekomendasi & Catatan Guru BK</h3>
               <p class="text-xs text-slate-500">Evaluasi komprehensif berdasarkan triangulasi data objektif siswa.</p>
             </div>
             <div class="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
@@ -1221,25 +1229,37 @@
 
             <!-- Catatan Evaluasi Konselor -->
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Evaluasi / Diagnostik Konselor BK *</label>
-              <textarea id="counselor_notes" rows="4" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none leading-relaxed" placeholder="Tuliskan analisis perbandingan antara nilai rapor, skor asesmen RIASEC, kepribadian kerja sama, dan konsistensi portofolio siswa..."></textarea>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Evaluasi / Diagnostik Guru BK *</label>
+              <textarea id="counselor_notes" rows="4" class="w-full px-3.5 py-2.5 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none leading-relaxed" placeholder="Tuliskan analisis perbandingan antara nilai rapor, skor asesmen RIASEC, kepribadian, dan konsistensi portofolio siswa..."></textarea>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Sidang / Bimbingan *</label>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Bimbingan / Penetapan *</label>
                 <input type="date" id="counselor_date" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none">
               </div>
 
               <div>
                 <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Guru Pembimbing BK *</label>
-                <input type="text" id="counselor_name" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="Dra. Hj. Nurul Hidayati, M.Pd., Kons.">
+                <input type="text" id="counselor_name" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" value="ANDRIYONO, S.Pd.">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">NIP Guru Pembimbing BK</label>
+                <input type="text" id="counselor_nip" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none font-mono" value="19800222 200501 1 007">
+              </div>
+
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Kepala Sekolah</label>
+                <input type="text" id="headmaster_name" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" value="ANI NURHAYATI, S.Pd., M.Pd.">
               </div>
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 mb-1">NIP Guru Pembimbing BK</label>
-              <input type="text" id="counselor_nip" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" placeholder="19780415 200501 2 004">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">NIP Kepala Sekolah</label>
+              <input type="text" id="headmaster_nip" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none font-mono" value="19800419 200604 2 005">
             </div>
 
             <div class="pt-2 flex justify-end">
@@ -1292,7 +1312,6 @@
           <div>
             <select id="rekap-filter-class" onchange="filterRekapTable()" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
               <option value="all">Semua Kelas</option>
-              <!-- Diisi otomatis via JS berdasarkan kelas yang ada -->
             </select>
           </div>
         </div>
@@ -1343,6 +1362,7 @@
 
     <!-- ========================================== -->
     <!-- TAB 6: RESUME KARIER SIAP CETAK (PDF VIEW) -->
+    <!-- DILENGKAPI KOP SURAT RESMI LOGO GANDA & TTD RESMI -->
     <!-- ========================================== -->
     <div id="tab-resume" class="tab-content hidden space-y-6">
       
@@ -1351,8 +1371,8 @@
         <div class="flex items-center gap-2 text-slate-700">
           <i data-lucide="printer" class="w-5 h-5 text-blue-600"></i>
           <div>
-            <h3 class="text-sm font-bold text-slate-900">Format Lembar Portofolio Karier Resmi (One-Page Ready)</h3>
-            <p class="text-xs text-slate-500">Format ini telah dioptimalkan untuk dicetak dalam selembar kertas A4 atau disimpan ke PDF.</p>
+            <h3 class="text-sm font-bold text-slate-900">Format Lembar Portofolio Karier Resmi SMP Negeri 2 Pekuncen</h3>
+            <p class="text-xs text-slate-500">Dilengkapi Kop Kedinasan Resmi Logo Ganda (Pemkab Banyumas & SMPN 2 Pekuncen) dan Pengesahan Kepala Sekolah.</p>
           </div>
         </div>
 
@@ -1366,104 +1386,130 @@
       <!-- KERTAS DOKUMEN RESMI (SHEET DINAS) -->
       <div class="print-document-sheet bg-white max-w-4xl mx-auto p-8 sm:p-10 rounded-2xl border border-slate-300 shadow-lg text-slate-900">
         
-        <!-- KOP SURAT DINAS RESMI -->
-        <div class="border-b-2 border-slate-900 pb-3 text-center relative flex items-center justify-between">
-          <!-- Logo Sekolah -->
-          <div class="w-16 h-16 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center shrink-0">
-            <i data-lucide="graduation-cap" class="w-9 h-9 text-blue-900"></i>
+        <!-- KOP SURAT DINAS RESMI LOGO GANDA -->
+        <div class="flex items-center justify-between pb-3 relative">
+          
+          <!-- Sisi Kiri: Logo Kabupaten Banyumas -->
+          <div class="w-20 flex justify-start shrink-0">
+            <img src="https://lh3.googleusercontent.com/d/1I25LYs-NVRvKYPaIQ30RU9vkdMrmTg0S" 
+                 alt="Logo Pemerintah Kabupaten Banyumas" 
+                 class="h-18 max-h-[72px] w-auto object-contain" 
+                 loading="eager" 
+                 crossorigin="anonymous">
           </div>
 
-          <div class="flex-1 px-4 text-center">
-            <p class="text-xs uppercase tracking-widest font-semibold text-slate-600">Pemerintah Provinsi / Dinas Pendidikan</p>
-            <h1 id="print-school-name" class="text-lg sm:text-xl font-black uppercase text-slate-900 tracking-tight">SMA NEGERI 1 PRESTASI BANGSA</h1>
-            <p id="print-school-address" class="text-[11px] text-slate-600">Jl. Pemuda No. 45, Kota Yogyakarta, DI Yogyakarta • Telp: (0274) 555-0129 • Web: www.sman1prestasibangsa.sch.id</p>
-            <p class="text-[10px] text-slate-500 font-medium">UNIT LAYANAN BIMBINGAN KONSELING & PENGEMBANGAN KARIER SISWA</p>
+          <!-- Sisi Tengah: Teks Instansi Kedinasan Rata Tengah & Tebal -->
+          <div class="flex-1 px-2 text-center">
+            <h2 class="text-sm sm:text-base font-bold uppercase tracking-wider text-slate-900 leading-tight">
+              PEMERINTAH KABUPATEN BANYUMAS
+            </h2>
+            <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wide text-slate-900 leading-tight">
+              DINAS PENDIDIKAN
+            </h3>
+            <h1 class="text-base sm:text-xl font-black uppercase tracking-tight text-slate-900 leading-tight mt-0.5">
+              SMP NEGERI 2 PEKUNCEN
+            </h1>
+            <p class="text-[11px] text-slate-700 leading-tight mt-1">
+              Jalan Raya Cikawung-Pekuncen, Kabupaten Banyumas
+            </p>
+            <p class="text-[10px] text-slate-600 font-medium">
+              UNIT LAYANAN BIMBINGAN DAN KONSELING (BK) • KODE POS: 53164
+            </p>
           </div>
 
-          <!-- Lambang BK / Akreditasi -->
-          <div class="w-16 h-16 rounded-full bg-slate-100 border border-slate-300 flex flex-col items-center justify-center shrink-0 text-center">
-            <span class="text-[9px] font-bold text-slate-400">AKREDITASI</span>
-            <span class="text-xs font-black text-blue-900">A UNGGUL</span>
+          <!-- Sisi Kanan: Logo SMP Negeri 2 Pekuncen -->
+          <div class="w-20 flex justify-end shrink-0">
+            <img src="https://lh3.googleusercontent.com/d/1oxZCi0JdecC-9-SgV0kdUAURm0kU-Cxk" 
+                 alt="Logo SMP Negeri 2 Pekuncen" 
+                 class="h-18 max-h-[72px] w-auto object-contain" 
+                 loading="eager" 
+                 crossorigin="anonymous">
           </div>
+
         </div>
-        <div class="border-b border-slate-900 mt-0.5 mb-5"></div>
 
-        <!-- JUDUL DOKUMEN -->
-        <div class="text-center mb-5">
-          <h2 class="text-base sm:text-lg font-black uppercase tracking-wider text-slate-900">
-            E-PORTOFOLIO KARIER & REKOMENDASI PEMINATAN SISWA
+        <!-- GARIS PEMBATAS GANDA TEBAL-TIPIS RESMI KOP DINAS -->
+        <div class="border-b-2 border-slate-900"></div>
+        <div class="border-b border-slate-900 mt-0.5 mb-4"></div>
+
+        <!-- JUDUL DOKUMEN RESMI DI BAWAH KOP -->
+        <div class="text-center mb-4">
+          <h2 class="text-sm sm:text-base font-black uppercase tracking-wider text-slate-900">
+            LEMBAR PORTOFOLIO KARIER & REKOMENDASI PEMINATAN PESERTA DIDIK
           </h2>
-          <p class="text-[11px] text-slate-600">Tahun Ajaran <span id="print-school-year" class="font-bold">2025/2026</span> • Nomor Dokumen: <span id="print-doc-id" class="font-mono font-bold">BK/PORTO-2025/089</span></p>
+          <p class="text-[11px] text-slate-600">
+            Tahun Pelajaran <span id="print-school-year" class="font-bold">2025/2026</span> • Nomor: <span id="print-doc-id" class="font-mono font-bold">BK/SMPN2PKC/2025/089</span>
+          </p>
         </div>
 
         <!-- IDENTITAS SISWA -->
-        <div class="bg-slate-50/80 rounded-xl p-4 border border-slate-200 mb-5 flex flex-col sm:flex-row items-center gap-5">
-          <!-- Foto Siswa -->
-          <div class="w-24 h-32 rounded-lg bg-slate-200 border-2 border-dashed border-slate-400 flex flex-col items-center justify-center shrink-0 overflow-hidden text-center p-2">
-            <i data-lucide="user" class="w-10 h-10 text-slate-400"></i>
-            <span class="text-[9px] text-slate-500 font-semibold mt-1">Pas Foto 3x4</span>
+        <div class="bg-slate-50/80 rounded-xl p-3.5 border border-slate-200 mb-4 flex flex-col sm:flex-row items-center gap-4">
+          <!-- Pas Foto Siswa -->
+          <div class="w-20 h-28 rounded-lg bg-slate-200 border-2 border-dashed border-slate-400 flex flex-col items-center justify-center shrink-0 overflow-hidden text-center p-1.5">
+            <i data-lucide="user" class="w-8 h-8 text-slate-400"></i>
+            <span class="text-[8px] text-slate-500 font-semibold mt-1">Pas Foto 3x4</span>
           </div>
 
           <!-- Tabel Data Diri -->
-          <div class="flex-1 grid grid-cols-2 gap-y-2 text-xs">
+          <div class="flex-1 grid grid-cols-2 gap-y-1.5 text-xs">
             <div>
-              <span class="text-slate-500 block text-[10px] uppercase font-semibold">Nama Lengkap</span>
+              <span class="text-slate-500 block text-[9px] uppercase font-semibold">Nama Lengkap Peserta Didik</span>
               <span id="print-student-name" class="font-bold text-slate-900 text-sm">Muhammad Farhan Al-Ghifari</span>
             </div>
             <div>
-              <span class="text-slate-500 block text-[10px] uppercase font-semibold">NISN / Nomor Induk</span>
-              <span id="print-student-nisn" class="font-bold text-slate-900 font-mono">0067891234 / 2122101</span>
+              <span class="text-slate-500 block text-[9px] uppercase font-semibold">NISN / Nomor Induk</span>
+              <span id="print-student-nisn" class="font-bold text-slate-900 font-mono">0089123456</span>
             </div>
             <div>
-              <span class="text-slate-500 block text-[10px] uppercase font-semibold">Kelas & Rombel</span>
-              <span id="print-student-class" class="font-bold text-slate-900">XII MIPA 1</span>
+              <span class="text-slate-500 block text-[9px] uppercase font-semibold">Kelas</span>
+              <span id="print-student-class" class="font-bold text-slate-900">IX A</span>
             </div>
             <div>
-              <span class="text-slate-500 block text-[10px] uppercase font-semibold">Tempat, Tanggal Lahir</span>
-              <span id="print-student-ttl" class="font-bold text-slate-900">Yogyakarta, 15 Mei 2008</span>
+              <span class="text-slate-500 block text-[9px] uppercase font-semibold">Tempat, Tanggal Lahir</span>
+              <span id="print-student-ttl" class="font-bold text-slate-900">Banyumas, 14 Mei 2011</span>
             </div>
             <div>
-              <span class="text-slate-500 block text-[10px] uppercase font-semibold">Rata-rata Rapor</span>
+              <span class="text-slate-500 block text-[9px] uppercase font-semibold">Rata-rata Nilai Rapor</span>
               <span id="print-student-gpa" class="font-bold text-blue-700">87.5 / 100</span>
             </div>
             <div>
-              <span class="text-slate-500 block text-[10px] uppercase font-semibold">Orang Tua / Wali</span>
+              <span class="text-slate-500 block text-[9px] uppercase font-semibold">Orang Tua / Wali</span>
               <span id="print-parent-name" class="font-bold text-slate-900">Bpk. Hendra Gunawan, S.E.</span>
             </div>
           </div>
         </div>
 
         <!-- SECTION HASIL ASESMEN MINAT RIASEC & GRAFIK RADAR -->
-        <div class="mb-5 border border-slate-200 rounded-xl p-4 bg-white">
-          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+        <div class="mb-4 border border-slate-200 rounded-xl p-3.5 bg-white">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 mb-2.5">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
-              <i data-lucide="pie-chart" class="w-4 h-4 text-blue-600"></i> I. Hasil Asesmen Minat Holland (RIASEC 18 Butir)
+              <i data-lucide="pie-chart" class="w-3.5 h-3.5 text-blue-600"></i> I. Hasil Asesmen Minat Holland (RIASEC 18 Butir)
             </h3>
             <div class="text-xs">
               Holland Code: <span id="print-holland-code" class="font-black text-blue-700 px-2 py-0.5 bg-blue-50 border border-blue-200 rounded">SEC</span>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
             <!-- Radar Canvas Miniatur untuk Print -->
             <div class="md:col-span-5 flex justify-center items-center">
-              <div class="w-[190px] h-[190px]">
+              <div class="w-[180px] h-[180px]">
                 <canvas id="riasecPrintRadarChart"></canvas>
               </div>
             </div>
 
             <!-- Detail Interpretasi -->
-            <div class="md:col-span-7 text-xs space-y-2">
+            <div class="md:col-span-7 text-xs space-y-1.5">
               <p>
-                <strong class="text-slate-800">Interpretasi Profil:</strong>
-                <span id="print-profile-desc" class="text-slate-600 block mt-0.5 leading-relaxed">
+                <strong class="text-slate-800">Profil Kepribadian Minat:</strong>
+                <span id="print-profile-desc" class="text-slate-600 block mt-0.5 leading-relaxed text-[11px]">
                   Menunjukkan kecenderungan dominan pada bidang Social (Kepedulian Sosial & Komunikasi), Enterprising (Inisiatif & Kepemimpinan), dan Conventional (Kerapian Administratif).
                 </span>
               </p>
               <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                <span class="font-bold text-slate-700 block text-[11px] mb-1">Rekomendasi Rumpun Bidang Karier & Studi Lanjut:</span>
-                <span id="print-career-clusters" class="text-slate-600 leading-snug block">
-                  1. Psikologi & Konseling Kemanusiaan • 2. Manajemen Bisnis & Hubungan Masyarakat • 3. Teknologi Informasi & Sistem Bisnis
+                <span class="font-bold text-slate-700 block text-[10px] mb-1">Rekomendasi Rumpun Peminatan Lanjutan (SMA/SMK) & Karier:</span>
+                <span id="print-career-clusters" class="text-slate-600 leading-snug block text-[11px]">
+                  1. MIPA / Teknik Komputer • 2. Manajemen Bisnis & Keuangan • 3. Layanan Sosial & Kesehatan
                 </span>
               </div>
             </div>
@@ -1471,82 +1517,94 @@
         </div>
 
         <!-- SECTION PRESTASI & PORTOFOLIO UNGGULAN -->
-        <div class="mb-5 border border-slate-200 rounded-xl p-4 bg-white">
-          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+        <div class="mb-4 border border-slate-200 rounded-xl p-3.5 bg-white">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-1.5 mb-2.5">
             <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
-              <i data-lucide="award" class="w-4 h-4 text-amber-500"></i> II. Rekam Prestasi & Portofolio Karya Unggulan (Top 3)
+              <i data-lucide="award" class="w-3.5 h-3.5 text-amber-500"></i> II. Rekam Prestasi & Portofolio Siswa (Top 3)
             </h3>
-            <span class="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Terverifikasi BK</span>
+            <span class="text-[9px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Terverifikasi BK</span>
           </div>
 
-          <div id="print-top-portfolio-list" class="space-y-2 text-xs">
+          <div id="print-top-portfolio-list" class="space-y-1.5 text-xs">
             <!-- Injected via JS -->
           </div>
         </div>
 
-        <!-- SECTION PERBANDINGAN PILIHAN SISWA & REKOMENDASI RESMI GURU BK -->
-        <div class="mb-6 border border-slate-200 rounded-xl p-4 bg-white">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5 border-b border-slate-100 pb-2 mb-3">
-            <i data-lucide="git-compare" class="w-4 h-4 text-emerald-600"></i> III. Penyelarasan Aspirasi Siswa & Keputusan Rekomendasi Guru BK
+        <!-- SECTION PERBANDINGAN PILIHAN SISWA & REKOMENDASI GURU BK -->
+        <div class="mb-5 border border-slate-200 rounded-xl p-3.5 bg-white">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-900 flex items-center gap-1.5 border-b border-slate-100 pb-1.5 mb-2.5">
+            <i data-lucide="git-compare" class="w-3.5 h-3.5 text-emerald-600"></i> III. Penyelarasan Aspirasi Siswa & Keputusan Rekomendasi Guru BK
           </h3>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-            <div class="bg-blue-50/50 p-3 rounded-lg border border-blue-100">
-              <span class="font-bold text-blue-900 block text-[11px] mb-1">Aspirasi Peminatan Mandiri Siswa:</span>
-              <ul class="space-y-1 text-slate-700">
-                <li>• <strong>Target Pilihan 1:</strong> <span id="print-choice-1">S1 Teknik Informatika</span></li>
-                <li>• <strong>Target Pilihan 2:</strong> <span id="print-choice-2">S1 Sistem Informasi</span></li>
-                <li>• <strong>Cita-Cita Karier:</strong> <span id="print-career-dream">Software Engineer</span></li>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="bg-blue-50/50 p-2.5 rounded-lg border border-blue-100">
+              <span class="font-bold text-blue-900 block text-[10px] mb-1">Aspirasi Peminatan Mandiri Siswa:</span>
+              <ul class="space-y-1 text-slate-700 text-[11px]">
+                <li>• <strong>Pilihan 1:</strong> <span id="print-choice-1">SMA Negeri 1 Ajibarang</span></li>
+                <li>• <strong>Pilihan 2:</strong> <span id="print-choice-2">SMK Negeri 1 Purwokerto</span></li>
+                <li>• <strong>Cita-Cita:</strong> <span id="print-career-dream">Software Engineer</span></li>
               </ul>
             </div>
 
-            <div class="bg-emerald-50/50 p-3 rounded-lg border border-emerald-100">
-              <span class="font-bold text-emerald-900 block text-[11px] mb-1">Keputusan & Rekomendasi Resmi Konselor:</span>
-              <div class="mb-1.5">
-                <span id="print-counselor-status" class="inline-block px-2 py-0.5 text-[11px] font-bold rounded bg-emerald-600 text-white">
+            <div class="bg-emerald-50/50 p-2.5 rounded-lg border border-emerald-100">
+              <span class="font-bold text-emerald-900 block text-[10px] mb-1">Keputusan & Rekomendasi Resmi Guru BK:</span>
+              <div class="mb-1">
+                <span id="print-counselor-status" class="inline-block px-2 py-0.5 text-[10px] font-bold rounded bg-emerald-600 text-white">
                   Sangat Direkomendasikan
                 </span>
               </div>
-              <p class="text-slate-600 italic text-[11px] leading-relaxed" id="print-counselor-notes">
-                "Berdasarkan analisis nilai rapor akademik yang unggul pada mata pelajaran eksak serta skor RIASEC pada dimensi I & E yang tinggi, siswa sangat potensial untuk melanjutkan ke rumpun Rekayasa Komputer."
+              <p class="text-slate-600 italic text-[10px] leading-relaxed" id="print-counselor-notes">
+                "Berdasarkan analisis nilai rapor akademik yang unggul serta skor asesmen minat Holland RIASEC, siswa sangat potensial untuk melanjutkan ke jenjang lanjutan pilihan 1."
               </p>
             </div>
           </div>
         </div>
 
-        <!-- LEMBAR PENGESAHAN / 3 KOLOM TANDA TANGAN RESMI -->
-        <div class="pt-4 text-xs">
-          <div class="text-right mb-6 text-slate-700">
-            Ditetapkan di: <span id="print-loc-date" class="font-medium">Yogyakarta, 16 Oktober 2026</span>
+        <!-- LEMBAR PENGESAHAN DENGAN 4 PIHAK (KIRI: ORANG TUA, TENGAH: PESERTA DIDIK, KANAN: GURU BK, BAWAH TENGAH: KEPALA SEKOLAH) -->
+        <div class="pt-2 text-xs">
+          <div class="text-right mb-3 text-slate-700 text-[11px]">
+            Ditetapkan di: <span id="print-loc-date" class="font-medium">Pekuncen, 16 Oktober 2026</span>
           </div>
 
-          <div class="grid grid-cols-3 gap-4 text-center">
+          <!-- Baris 1: 3 Kolom Tanda Tangan -->
+          <div class="grid grid-cols-3 gap-3 text-center">
             
-            <!-- Tanda Tangan 1: Siswa -->
-            <div class="flex flex-col justify-between h-32">
-              <p class="text-[11px] text-slate-600 font-semibold">Siswa Yang Bersangkutan,</p>
-              <div class="border-b border-slate-900 w-36 mx-auto"></div>
-              <p id="print-sign-student" class="font-bold text-slate-900 text-xs">Muhammad Farhan Al-Ghifari</p>
-            </div>
-
-            <!-- Tanda Tangan 2: Orang Tua -->
-            <div class="flex flex-col justify-between h-32">
-              <p class="text-[11px] text-slate-600 font-semibold">Mengetahui,<br>Orang Tua / Wali Murid,</p>
+            <!-- Kiri: Orang Tua/Wali -->
+            <div class="flex flex-col justify-between h-24">
+              <p class="text-[10px] text-slate-700 font-semibold">Orang Tua / Wali Siswa,</p>
               <div class="border-b border-slate-900 w-36 mx-auto"></div>
               <p id="print-sign-parent" class="font-bold text-slate-900 text-xs">Bpk. Hendra Gunawan, S.E.</p>
             </div>
 
-            <!-- Tanda Tangan 3: Guru BK Pembimbing -->
-            <div class="flex flex-col justify-between h-32">
-              <p class="text-[11px] text-slate-600 font-semibold">Guru Pembimbing Konseling (BK),</p>
+            <!-- Tengah: Siswa -->
+            <div class="flex flex-col justify-between h-24">
+              <p class="text-[10px] text-slate-700 font-semibold">Peserta Didik,</p>
+              <div class="border-b border-slate-900 w-36 mx-auto"></div>
+              <p id="print-sign-student" class="font-bold text-slate-900 text-xs">Muhammad Farhan Al-Ghifari</p>
+            </div>
+
+            <!-- Kanan: Guru BK (ANDRIYONO, S.Pd.) -->
+            <div class="flex flex-col justify-between h-24">
+              <p class="text-[10px] text-slate-700 font-semibold">Guru Bimbingan dan Konseling,</p>
               <div class="border-b border-slate-900 w-36 mx-auto"></div>
               <div>
-                <p id="print-sign-counselor" class="font-bold text-slate-900 text-xs">Dra. Hj. Nurul Hidayati, M.Pd.</p>
-                <p class="text-[10px] text-slate-500">NIP. <span id="print-sign-nip">19780415 200501 2 004</span></p>
+                <p id="print-sign-counselor" class="font-bold text-slate-900 text-xs">ANDRIYONO, S.Pd.</p>
+                <p class="text-[9px] text-slate-600">NIP. <span id="print-sign-nip">19800222 200501 1 007</span></p>
               </div>
             </div>
 
           </div>
+
+          <!-- Baris 2: Bawah Tengah - Mengetahui Kepala Sekolah (ANI NURHAYATI, S.Pd., M.Pd.) -->
+          <div class="mt-5 flex flex-col items-center text-center">
+            <p class="text-[10px] text-slate-700 font-semibold">Mengetahui,</p>
+            <p class="text-[10px] text-slate-700 font-bold uppercase">Kepala SMP Negeri 2 Pekuncen</p>
+            <div class="h-14"></div>
+            <div class="border-b border-slate-900 w-56"></div>
+            <p id="print-sign-headmaster" class="font-bold text-slate-900 text-xs mt-0.5">ANI NURHAYATI, S.Pd., M.Pd.</p>
+            <p class="text-[9px] text-slate-600">NIP. <span id="print-sign-headmaster-nip">19800419 200604 2 005</span></p>
+          </div>
+
         </div>
 
       </div>
@@ -1560,7 +1618,7 @@
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
       <div class="flex items-center gap-2">
         <i data-lucide="shield-check" class="w-4 h-4 text-blue-600"></i>
-        <span>SIM-BK: Sistem Informasi Manajemen Bimbingan Konseling Sekolah Berstandar Nasional</span>
+        <span>SIM-BK SMP Negeri 2 Pekuncen, Kabupaten Banyumas • Sistem Informasi Manajemen Bimbingan Konseling</span>
       </div>
       <div class="flex items-center gap-3">
         <span class="inline-flex items-center gap-1 text-emerald-600 font-semibold">
@@ -1573,71 +1631,71 @@
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- JAVASCRIPT LOGIC LENGKAP DENGAN INTEGRASI GOOGLE APPS SCRIPT -->
+  <!-- JAVASCRIPT LOGIC LENGKAP -->
   <script>
     // ==============================================================
-    // 1. ENDPOINT GLOBAL GOOGLE APPS SCRIPT (GAS)
+    // 1. ENDPOINT GLOBAL GOOGLE APPS SCRIPT (GAS) & STORAGE
     // ==============================================================
     const GAS_API_URL = "https://script.google.com/macros/s/AKfycbw5ZTryTHPYyqFwkMSMTDmyvz4Q-T_TsWWJYrt0pgDexzZCoJeet0xoG6N6cze7LxfflA/exec";
-    const STORAGE_KEY = 'SIM_BK_DATA_V2';
+    const STORAGE_KEY = 'SIM_BK_DATA_SMPN2PKC_V3';
 
-    // Model Referensi Holland RIASEC
+    // Model Referensi Holland RIASEC (Jenjang SMP menuju SMA/SMK)
     const RIASEC_PROFILES = {
       R: {
         name: 'Realistic',
         title: 'Tipe Praktis & Teknik',
         color: '#2563eb',
         desc: 'Cenderung menyukai aktivitas fisik, alat perkakas kerja, mekanik, perakitan, dan kegiatan lapangan terbuka.',
-        careers: ['Teknik Mesin & Elektro', 'Teknik Sipil & Arsitektur', 'Agribisnis & Kehutanan', 'Mekatronika & Otomotif']
+        careers: ['SMK Teknik Mesin & Otomotif', 'SMK Teknik Ketenagalistrikan', 'SMK Teknik Komputer & Jaringan', 'SMA Peminatan Sains & Teknologi']
       },
       I: {
         name: 'Investigative',
         title: 'Tipe Peneliti & Pemikir Analitis',
         color: '#059669',
         desc: 'Menyukai pemecahan masalah logika abstrak, eksperimen laboratorium ilmiah, analisis data kuantitatif, dan coding.',
-        careers: ['Teknik Informatika & AI', 'Kedokteran & Sains Biomedis', 'Matematika & Data Science', 'Fisika & Bioteknologi']
+        careers: ['SMA Peminatan MIPA / Sains', 'SMK Rekayasa Perangkat Lunak (RPL)', 'SMK Kimia Industri / Analis Kesehatan', 'Riset Ilmiah Remaja']
       },
       A: {
         name: 'Artistic',
         title: 'Tipe Kreatif & Ekspresif',
         color: '#9333ea',
         desc: 'Menyukai ekspresi bebas, karya seni visual/audio orisinal, desain grafis, sastra penulisan, dan dunia kreatif tanpa sekat kaku.',
-        careers: ['Desain Komunikasi Visual (DKV)', 'Arsitektur & Desain Interior', 'Perfilman & Animasi Digital', 'Sastra & Jurnalisme Kreatif']
+        careers: ['SMK Desain Komunikasi Visual (DKV)', 'SMK Kriya Kreatif & Seni Lukis', 'SMA Peminatan Bahasa & Budaya', 'Multimedia & Animasi Digital']
       },
       S: {
         name: 'Social',
         title: 'Tipe Penolong & Edukator',
         color: '#e11d48',
         desc: 'Memiliki empati tinggi, senang mengayomi, mengajar sesama, mendengarkan curhat, konseling, dan mengabdi untuk kemanusiaan.',
-        careers: ['Pendidikan / Keguruan', 'Psikologi & Bimbingan Konseling', 'Ilmu Keperawatan & Kesehatan Masyarakat', 'Hubungan Masyarakat (Humas)']
+        careers: ['SMA Peminatan Ilmu Sosial (IPS)', 'SMK Layanan Kesehatan / Keperawatan', 'Pendidikan & Keguruan', 'Komunikasi & Hubungan Masyarakat']
       },
       E: {
         name: 'Enterprising',
         title: 'Tipe Pemimpin & Wirausahawan',
         color: '#d97706',
         desc: 'Memiliki daya persuasi kuat, suka memimpin organisasi, merancang inisiatif bisnis baru, dan berani mengambil risiko target tinggi.',
-        careers: ['Manajemen Bisnis & Kewirausahaan', 'Ilmu Hukum & Advokasi', 'Hubungan Internasional & Diplomasi', 'Pemasaran Digital & Manajemen Acara']
+        careers: ['SMK Bisnis Daring & Pemasaran', 'SMK Manajemen Perkantoran', 'SMA Peminatan Ilmu Sosial', 'Wirausaha Mandiri & Kepemimpinan']
       },
       C: {
         name: 'Conventional',
         title: 'Tipe Teratur & Administratif',
         color: '#0891b2',
         desc: 'Teliti, menyukai prosedur standar kerja yang rapi, pencatatan keuangan akurat, manajemen data berkas, dan kepatuhan sistematis.',
-        careers: ['Akuntansi & Perpajakan', 'Manajemen Keuangan Perbankan', 'Sistem Informasi Bisnis', 'Administrasi Publik & Tata Kelola Dokumen']
+        careers: ['SMK Akuntansi & Keuangan Lembaga', 'SMK Otomatisasi Tata Kelola Perkantoran', 'SMA Peminatan IPS / Administrasi', 'Manajemen Data & Kearsipan']
       }
     };
 
-    // Data Awal Standar
+    // Data Awal Standar SMP Negeri 2 Pekuncen
     const DEFAULT_DATA = {
       student: {
         name: 'Muhammad Farhan Al-Ghifari',
-        nisn: '0067891234',
-        class: 'XII MIPA 1',
-        school: 'SMA Negeri 1 Prestasi Bangsa',
-        schoolAddress: 'Jl. Pemuda No. 45, Kota Yogyakarta, DI Yogyakarta',
+        nisn: '0089123456',
+        class: 'IX A',
+        school: 'SMP NEGERI 2 PEKUNCEN',
+        schoolAddress: 'Jalan Raya Cikawung-Pekuncen, Kabupaten Banyumas',
         schoolYear: '2025/2026',
-        ttl: 'Yogyakarta, 15 Mei 2008',
-        gpa: 88.5,
+        ttl: 'Banyumas, 14 Mei 2011',
+        gpa: 87.5,
         parentName: 'Bpk. Hendra Gunawan, S.E.'
       },
       answers: {
@@ -1657,49 +1715,51 @@
       portfolio: [
         {
           id: 'port-1',
-          title: 'Juara 1 Lomba Karya Tulis Ilmiah Remaja (LKIR) Tingkat Provinsi',
+          title: 'Juara 2 Lomba Cerdas Cermat Sains Tingkat Sub Rayon Ajibarang',
           category: 'Prestasi Akademik',
-          level: 'Provinsi',
+          level: 'Kecamatan / Sub Rayon',
           year: 2025,
-          url: 'https://drive.google.com/drive/folders/lkir-sains-2025',
+          url: 'https://drive.google.com/drive/folders/prestasi-smpn2pkc',
           verified: true
         },
         {
           id: 'port-2',
-          title: 'Ketua Divisi Publikasi & Dokumentasi OSIS / MPK Sekolah',
+          title: 'Pratama Regu Pramuka Penggalang SMP Negeri 2 Pekuncen',
           category: 'Ekstrakurikuler / Organisasi',
           level: 'Sekolah',
           year: 2024,
-          url: 'https://instagram.com/osis_sman1prestasibangsa',
+          url: 'https://drive.google.com/drive/folders/pramuka-smpn2pkc',
           verified: true
         },
         {
           id: 'port-3',
-          title: 'Pembuat Prototipe Aplikasi Edukasi Kuis Cerdas Berbasis Web (JavaScript)',
+          title: 'Pembuat Media Pembelajaran Digital Interaktif IPA Berbasis Web',
           category: 'Proyek Kreatif / Portofolio',
-          level: 'Kabupaten/Kota',
+          level: 'Kabupaten Banyumas',
           year: 2025,
-          url: 'https://github.com/farhan-dev/smart-quiz-edukasi',
+          url: 'https://github.com/farhan-smp/media-ipa-digital',
           verified: true
         }
       ],
       aspiration: {
-        choice1: 'S1 Teknik Informatika - Institut Teknologi Bandung (ITB)',
-        choice2: 'S1 Sistem Informasi - Universitas Gadjah Mada (UGM)',
-        careerDream: 'Lead Software Engineer & Pengembang Teknologi AI'
+        choice1: 'SMA Negeri 1 Ajibarang (Peminatan MIPA / Sains)',
+        choice2: 'SMK Negeri 1 Purwokerto (Rekayasa Perangkat Lunak)',
+        careerDream: 'Software Engineer & Teknisi Komputer'
       },
       counselor: {
         status: 'Sangat Direkomendasikan (Sesuai Minat & Bakat)',
-        notes: 'Hasil asesmen minat RIASEC menunjukkan kode dominan IEC/ISE yang sangat selaras dengan minat rekayasa teknologi dan komputasi analitis. Nilai rata-rata rapor eksak serta portofolio karya coding mandiri sangat mendukung daya saing siswa pada seleksi perguruan tinggi negeri.',
+        notes: 'Hasil asesmen minat RIASEC menunjukkan kode dominan IEC/ISE yang sangat selaras dengan minat sains teknologi dan rekayasa komputer. Nilai rapor mata pelajaran IPA & Matematika konsisten di atas 88 serta aktif dalam kepengurusan kepramukaan.',
         date: '2026-10-16',
-        name: 'Dra. Hj. Nurul Hidayati, M.Pd., Kons.',
-        nip: '19780415 200501 2 004'
+        name: 'ANDRIYONO, S.Pd.',
+        nip: '19800222 200501 1 007',
+        headmasterName: 'ANI NURHAYATI, S.Pd., M.Pd.',
+        headmasterNip: '19800419 200604 2 005'
       }
     };
 
     // State Aplikasi
     let appData = {};
-    let rekapCloudData = []; // Data dari GAS ?tipe=getAsesmen
+    let rekapCloudData = [];
     let radarChartInstance = null;
     let radarPrintChartInstance = null;
     let activePortfolioFilter = 'all';
@@ -1738,11 +1798,11 @@
     }
 
     function resetDemoData() {
-      if (confirm('Apakah Anda yakin ingin memuat ulang Data Demo realistis? Data yang sedang diedit akan diperbarui.')) {
+      if (confirm('Muat ulang data demo SMP Negeri 2 Pekuncen? Data yang belum tersimpan akan diperbarui.')) {
         appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
         saveDataToStorage(false);
         renderAllTabs();
-        showNotification('Data Demo sukses dimuat!', 'info');
+        showNotification('Data Demo SMP Negeri 2 Pekuncen dimuat!', 'info');
       }
     }
 
@@ -1764,7 +1824,6 @@
         }
       });
 
-      // Update active state di nav bar
       const navButtons = document.querySelectorAll('#main-tabs .tab-btn');
       navButtons.forEach(btn => {
         if (btn.getAttribute('data-tab') === tabId) {
@@ -1792,10 +1851,9 @@
     }
 
     // ==============================================================
-    // 2. PENGIRIMAN DATA HASIL ASESMEN RIASEC KE GOOGLE APPS SCRIPT (POST)
+    // 2. SINKRONISASI HASIL ASESMEN RIASEC KE GOOGLE APPS SCRIPT (POST)
     // ==============================================================
     async function kirimAsesmenKeGas() {
-      // Pastikan skor dihitung dulu
       calculateRiasec(false);
 
       const s = appData.student || {};
@@ -1803,7 +1861,6 @@
       const scores = appData.riasecScores || { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
       const hollandCode = appData.hollandCode || 'RIA';
 
-      // Validasi kelengkapan data dasar
       if (!s.nisn || !s.name) {
         showNotification('Mohon lengkapi Nama Siswa dan NISN di Tab 1 (Data Siswa) terlebih dahulu!', 'warning');
         switchTab('tab-dashboard');
@@ -1830,7 +1887,6 @@
       const btn = document.getElementById('btn-submit-riasec-gas');
       const originalText = btn ? btn.innerHTML : '';
 
-      // Set Visual State: Loading Spinner
       if (btn) {
         btn.disabled = true;
         btn.classList.add('opacity-80', 'cursor-not-allowed');
@@ -1841,11 +1897,9 @@
       }
 
       try {
-        // Simpan juga salinan aktif ke localStorage
         saveDataToStorage(false);
 
-        // Fetch POST dengan header text/plain agar tidak memicu CORS Preflight di GAS
-        const response = await fetch(GAS_API_URL, {
+        await fetch(GAS_API_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'text/plain;charset=utf-8'
@@ -1853,17 +1907,8 @@
           body: JSON.stringify(payload)
         });
 
-        const resultText = await response.text();
-        let resultJson = null;
-        try {
-          resultJson = JSON.parse(resultText);
-        } catch (e) {
-          resultJson = { raw: resultText };
-        }
-
-        showNotification('Data Asesmen RIASEC berhasil dikirim & disimpan ke Google Sheets!', 'success');
+        showNotification('Hasil Asesmen RIASEC berhasil dikirim & disimpan ke Google Sheets!', 'success');
         
-        // Tandai status cloud di dashboard
         const statCloud = document.getElementById('stat-cloud-status');
         if (statCloud) statCloud.innerText = 'Tersinkronisasi';
 
@@ -1881,7 +1926,7 @@
     }
 
     // ==============================================================
-    // 3. PENGIRIMAN DATA PORTOFOLIO / PRESTASI KE GOOGLE APPS SCRIPT (POST)
+    // 3. SINKRONISASI DATA PORTOFOLIO KE GOOGLE APPS SCRIPT (POST)
     // ==============================================================
     async function simpanPortofolioHandler() {
       const s = appData.student || {};
@@ -1897,10 +1942,6 @@
       }
 
       const nisn = String(s.nisn || "").trim();
-      if (!nisn) {
-        showNotification('NISN belum diisi di Tab 1 (Data Siswa). Lengkapi NISN agar terhubung dengan Google Sheets.', 'warning');
-      }
-
       const newItem = {
         id: 'port-' + Date.now(),
         title,
@@ -1911,20 +1952,17 @@
         verified: true
       };
 
-      // Simpan ke array portofolio lokal
       if (!appData.portfolio) appData.portfolio = [];
       appData.portfolio.unshift(newItem);
       saveDataToStorage(false);
       renderPortfolioTable();
 
-      // Reset input form
       document.getElementById('port_title').value = '';
       document.getElementById('port_url').value = '';
 
-      // Kirim POST ke GAS
       const payload = {
         action: "simpanPortofolio",
-        nisn: nisn || "0000000000",
+        nisn: nisn || "0089123456",
         namaKegiatan: title,
         kategori: category,
         tingkat: level,
@@ -1952,10 +1990,10 @@
           body: JSON.stringify(payload)
         });
 
-        showNotification('Portofolio berhasil ditambahkan & dikirim ke Google Sheets!', 'success');
+        showNotification('Portofolio tersimpan & terkirim ke Google Sheets!', 'success');
       } catch (err) {
         console.error('Error simpan portofolio ke GAS:', err);
-        showNotification('Portofolio disimpan secara lokal (Gagal terhubung ke Google Sheets)', 'warning');
+        showNotification('Portofolio disimpan secara lokal (Gagal koneksi Google Sheets)', 'warning');
       } finally {
         if (btn) {
           btn.disabled = false;
@@ -1966,7 +2004,7 @@
     }
 
     // ==============================================================
-    // 4. PENGAMBILAN DATA REKAPITULASI UNTUK GURU BK (GET)
+    // 4. PENGAMBILAN DATA REKAPITULASI DARI GOOGLE APPS SCRIPT (GET)
     // ==============================================================
     async function muatDataRekap() {
       const tbody = document.getElementById('rekap-table-body');
@@ -1995,7 +2033,6 @@
         } else if (data && Array.isArray(data.data)) {
           items = data.data;
         } else if (data && typeof data === 'object') {
-          // Jika dibungkus key lain
           const possibleArray = Object.values(data).find(v => Array.isArray(v));
           items = possibleArray || [];
         }
@@ -2012,11 +2049,10 @@
       } catch (err) {
         console.error('Error saat muatDataRekap dari GAS:', err);
         if (statusText) {
-          statusText.innerText = 'Gagal memuat dari Google Sheets. Menampilkan data lokal cadangan.';
+          statusText.innerText = 'Gagal memuat dari Google Sheets. Menggunakan data lokal aktif.';
         }
-        showNotification('Gagal memuat data cloud: ' + (err.message || 'Periksa jaringan internet'), 'warning');
+        showNotification('Gagal mengambil data dari Google Sheets: ' + (err.message || 'Periksa koneksi'), 'warning');
 
-        // Fallback: Tampilkan minimal data siswa aktif saat ini jika cloud gagal
         if (rekapCloudData.length === 0 && appData.student && appData.student.name) {
           const fallbackItem = {
             timestamp: new Date().toLocaleString('id-ID'),
@@ -2109,9 +2145,7 @@
           const holland = item.kodeHolland || item.KodeHolland || item.holland || '-';
           const p1 = item.pilihan1 || item.Pilihan1 || '-';
           const p2 = item.pilihan2 || item.Pilihan2 || '-';
-          const cita = item.citaCita || item.CitaCita || '-';
 
-          // Badge warna Holland Code
           let badgeColor = 'bg-blue-100 text-blue-800 border-blue-200';
           if (holland.includes('S')) badgeColor = 'bg-rose-100 text-rose-800 border-rose-200';
           else if (holland.includes('I')) badgeColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
@@ -2148,7 +2182,6 @@
       if (window.lucide) lucide.createIcons();
     }
 
-    // Aksi "Lihat Detail / Cetak" dari data rekap Google Sheets
     function lihatDetailSiswaDariRekap(nisnTarget) {
       const found = rekapCloudData.find(item => String(item.nisn || item.NISN) === String(nisnTarget));
       if (!found) {
@@ -2156,7 +2189,6 @@
         return;
       }
 
-      // Terapkan ke state aktif
       appData.student = appData.student || {};
       appData.student.name = found.nama || found.Nama || appData.student.name;
       appData.student.nisn = found.nisn || found.NISN || appData.student.nisn;
@@ -2166,7 +2198,6 @@
         appData.hollandCode = found.kodeHolland || found.KodeHolland;
       }
 
-      // Skor RIASEC
       appData.riasecScores = {
         R: Number(found.skorR || 0),
         I: Number(found.skorI || 0),
@@ -2176,7 +2207,6 @@
         C: Number(found.skorC || 0)
       };
 
-      // Aspirasi
       appData.aspiration = appData.aspiration || {};
       appData.aspiration.choice1 = found.pilihan1 || found.Pilihan1 || appData.aspiration.choice1;
       appData.aspiration.choice2 = found.pilihan2 || found.Pilihan2 || appData.aspiration.choice2;
@@ -2185,9 +2215,8 @@
       saveDataToStorage(false);
       renderAllTabs();
 
-      // Beralih ke tab resume cetak
       switchTab('tab-resume');
-      showNotification(`Memuat data profil ${appData.student.name} ke Lembar Cetak`, 'success');
+      showNotification(`Memuat data profil ${appData.student.name} ke Lembar Cetak Resmi`, 'success');
     }
 
     // ==============================================================
@@ -2204,15 +2233,14 @@
       updatePrintView();
     }
 
-    // 1. Data Siswa
     function renderStudentForm() {
       const s = appData.student || {};
       document.getElementById('student_name').value = s.name || '';
       document.getElementById('student_nisn').value = s.nisn || '';
       document.getElementById('student_class').value = s.class || '';
-      document.getElementById('school_name').value = s.school || '';
-      document.getElementById('school_address').value = s.schoolAddress || '';
-      document.getElementById('school_year').value = s.schoolYear || '';
+      document.getElementById('school_name').value = s.school || 'SMP NEGERI 2 PEKUNCEN';
+      document.getElementById('school_address').value = s.schoolAddress || 'Jalan Raya Cikawung-Pekuncen, Kabupaten Banyumas';
+      document.getElementById('school_year').value = s.schoolYear || '2025/2026';
       document.getElementById('student_ttl').value = s.ttl || '';
       document.getElementById('student_gpa').value = s.gpa || '';
       document.getElementById('parent_name').value = s.parentName || '';
@@ -2233,7 +2261,6 @@
       saveDataToStorage(true);
     }
 
-    // 2. Asesmen RIASEC (18 Butir)
     function renderRiasecAnswers() {
       const ans = appData.answers || {};
       for (let i = 1; i <= 18; i++) {
@@ -2307,7 +2334,7 @@
         profileTitle.innerText = `Tipe Profil Dominan: ${top1.name} - ${top2.name} - ${top3.name} (${hollandCode})`;
       }
       if (profileDesc) {
-        profileDesc.innerText = `Karakteristik minat Anda dipimpin oleh dimensi ${top1.name} (${top1.title.toLowerCase()}) yang disokong oleh dimensi ${top2.name} dan ${top3.name}. ${top1.desc} ${top2.desc}`;
+        profileDesc.innerText = `Karakteristik minat siswa didominasi oleh dimensi ${top1.name} (${top1.title.toLowerCase()}) yang disokong oleh dimensi ${top2.name} dan ${top3.name}. ${top1.desc} ${top2.desc}`;
       }
 
       if (careerSuggestionsEl) {
@@ -2340,7 +2367,6 @@
       }
     }
 
-    // Render Radar Chart interaktif via Chart.js
     function renderRadarChart() {
       const ctx = document.getElementById('riasecRadarChart');
       if (!ctx) return;
@@ -2401,7 +2427,6 @@
       });
     }
 
-    // Render Radar Chart untuk Lembar Resume Cetak
     function renderPrintRadarChart() {
       const ctx = document.getElementById('riasecPrintRadarChart');
       if (!ctx) return;
@@ -2449,7 +2474,6 @@
       });
     }
 
-    // 3. Brankas Portofolio
     function renderPortfolioTable() {
       const tbody = document.getElementById('portfolio-table-body');
       const emptyState = document.getElementById('portfolio-empty-state');
@@ -2533,7 +2557,6 @@
       renderPortfolioTable();
     }
 
-    // 4. Konsultasi & Rekomendasi Guru BK
     function renderAspirationForm() {
       const asp = appData.aspiration || {};
       document.getElementById('target_choice_1').value = asp.choice1 || '';
@@ -2555,8 +2578,10 @@
       document.getElementById('counselor_status').value = c.status || 'Sangat Direkomendasikan (Sesuai Minat & Bakat)';
       document.getElementById('counselor_notes').value = c.notes || '';
       document.getElementById('counselor_date').value = c.date || new Date().toISOString().split('T')[0];
-      document.getElementById('counselor_name').value = c.name || '';
-      document.getElementById('counselor_nip').value = c.nip || '';
+      document.getElementById('counselor_name').value = c.name || 'ANDRIYONO, S.Pd.';
+      document.getElementById('counselor_nip').value = c.nip || '19800222 200501 1 007';
+      document.getElementById('headmaster_name').value = c.headmasterName || 'ANI NURHAYATI, S.Pd., M.Pd.';
+      document.getElementById('headmaster_nip').value = c.headmasterNip || '19800419 200604 2 005';
     }
 
     function saveCounselorNotes() {
@@ -2565,12 +2590,13 @@
         notes: document.getElementById('counselor_notes').value.trim(),
         date: document.getElementById('counselor_date').value,
         name: document.getElementById('counselor_name').value.trim(),
-        nip: document.getElementById('counselor_nip').value.trim()
+        nip: document.getElementById('counselor_nip').value.trim(),
+        headmasterName: document.getElementById('headmaster_name').value.trim(),
+        headmasterNip: document.getElementById('headmaster_nip').value.trim()
       };
       saveDataToStorage(true);
     }
 
-    // 5. Dashboard Stats & Print View Updates
     function updateDashboardStats() {
       const hollandCode = appData.hollandCode || '-';
       const portCount = (appData.portfolio || []).length;
@@ -2591,9 +2617,6 @@
       const a = appData.aspiration || {};
       const hollandCode = appData.hollandCode || 'RIA';
 
-      // Header Kop
-      setText('print-school-name', s.school || 'SMA NEGERI 1 PRESTASI BANGSA');
-      setText('print-school-address', s.schoolAddress || 'Jl. Pemuda No. 45, Kota Yogyakarta');
       setText('print-school-year', s.schoolYear || '2025/2026');
 
       // Data Siswa
@@ -2611,7 +2634,7 @@
       const top2 = RIASEC_PROFILES[sortedDims[1]] || RIASEC_PROFILES['I'];
       const top3 = RIASEC_PROFILES[sortedDims[2]] || RIASEC_PROFILES['A'];
 
-      setText('print-profile-desc', `Menunjukkan profil minat dominan ${top1.name} (${top1.title}), diperkuat oleh ${top2.name} dan ${top3.name}. Siswa memiliki daya adaptasi kuat pada ${top1.desc.toLowerCase()}`);
+      setText('print-profile-desc', `Menunjukkan profil minat dominan ${top1.name} (${top1.title}), diperkuat oleh ${top2.name} dan ${top3.name}. Peserta didik memiliki kecenderungan minat pada ${top1.desc.toLowerCase()}`);
       setText('print-career-clusters', `1. ${top1.careers.slice(0, 2).join(' & ')} • 2. ${top2.careers.slice(0, 2).join(' & ')} • 3. ${top3.careers.slice(0, 2).join(' & ')}`);
 
       // Top 3 Portofolio
@@ -2627,10 +2650,10 @@
                 <span class="font-bold text-slate-700">${idx + 1}.</span>
                 <div>
                   <p class="font-bold text-slate-900">${escapeHtml(item.title)}</p>
-                  <p class="text-[10px] text-slate-500">${escapeHtml(item.category)} • Tingkat ${escapeHtml(item.level)} (${item.year})</p>
+                  <p class="text-[9px] text-slate-500">${escapeHtml(item.category)} • Tingkat ${escapeHtml(item.level)} (${item.year})</p>
                 </div>
               </div>
-              <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Terverifikasi</span>
+              <span class="text-[9px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Terverifikasi</span>
             </div>
           `).join('');
         }
@@ -2642,15 +2665,17 @@
       setText('print-career-dream', a.careerDream || 'Belum diisi');
 
       setText('print-counselor-status', c.status || 'Sangat Direkomendasikan');
-      setText('print-counselor-notes', `"${c.notes || 'Rekomendasi resmi berdasarkan komparasi asesmen holistik BK.'}"`);
+      setText('print-counselor-notes', `"${c.notes || 'Rekomendasi resmi berdasarkan komparasi hasil asesmen psikometri RIASEC dan capaian akademik peserta didik.'}"`);
 
-      // Tanda Tangan
+      // Tanda Tangan Lengkap Resmi
       const dateFormatted = c.date ? formatDateIndo(c.date) : '16 Oktober 2026';
-      setText('print-loc-date', `Yogyakarta, ${dateFormatted}`);
+      setText('print-loc-date', `Pekuncen, ${dateFormatted}`);
       setText('print-sign-student', s.name || 'Nama Siswa');
       setText('print-sign-parent', s.parentName || 'Nama Orang Tua / Wali');
-      setText('print-sign-counselor', c.name || 'Konselor Bimbingan Konseling');
-      setText('print-sign-nip', c.nip || '-');
+      setText('print-sign-counselor', c.name || 'ANDRIYONO, S.Pd.');
+      setText('print-sign-nip', c.nip || '19800222 200501 1 007');
+      setText('print-sign-headmaster', c.headmasterName || 'ANI NURHAYATI, S.Pd., M.Pd.');
+      setText('print-sign-headmaster-nip', c.headmasterNip || '19800419 200604 2 005');
 
       if (window.lucide) {
         lucide.createIcons();
@@ -2681,16 +2706,13 @@
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // ==============================================================
-    // EKSPOR FILE HTML TUNGGAL
-    // ==============================================================
     function exportSingleFileHtml() {
       const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
       const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `SIM-BK-Portofolio-${(appData.student && appData.student.name ? appData.student.name.replace(/\s+/g, '_') : 'Siswa')}.html`;
+      a.download = `SIM-BK-SMPN2Pekuncen-${(appData.student && appData.student.name ? appData.student.name.replace(/\s+/g, '_') : 'Siswa')}.html`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -2698,9 +2720,6 @@
       showNotification('Berkas Single-File HTML berhasil diunduh! Siap dibuka offline atau di-hosting.', 'success');
     }
 
-    // ==============================================================
-    // EVENT LISTENERS & NOTIFIKASI TOAST
-    // ==============================================================
     function setupEventListeners() {
       const tabBtns = document.querySelectorAll('#main-tabs .tab-btn');
       tabBtns.forEach(btn => {
