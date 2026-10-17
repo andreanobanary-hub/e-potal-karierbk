@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SIM-BK: E-Portofolio Karier & Peminatan Siswa Terpadu</title>
-  <meta name="description" content="Sistem Informasi Bimbingan Konseling (SIM-BK) untuk E-Portofolio Karier, Asesmen Minat Holland RIASEC, Brankas Prestasi, dan Konsultasi Peminatan Siswa.">
+  <meta name="description" content="Sistem Informasi Bimbingan Konseling (SIM-BK) untuk E-Portofolio Karier, Asesmen Minat Holland RIASEC, Brankas Prestasi, dan Konsultasi Peminatan Siswa terintegrasi Google Sheets.">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -80,6 +80,15 @@
       box-shadow: 0 1px 2px 0 rgba(37, 99, 235, 0.1);
     }
 
+    /* Spinner Anim */
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-fast {
+      animation: spin 0.8s linear infinite;
+    }
+
     /* @media print formatting - Menjamin 1 lembar rapi dokumen dinas */
     @media print {
       body {
@@ -142,7 +151,10 @@
           <div>
             <div class="flex items-center gap-2">
               <span class="font-extrabold text-lg tracking-tight text-slate-900">SIM-BK</span>
-              <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-semibold border border-blue-200">v2.5 Terpadu</span>
+              <span class="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-semibold border border-blue-200 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Cloud Sheets Sync
+              </span>
             </div>
             <p class="text-xs text-slate-500 hidden sm:block">E-Portofolio Karier & Peminatan Siswa Berbasis Holland RIASEC</p>
           </div>
@@ -152,7 +164,7 @@
         <div class="flex items-center gap-2 sm:gap-3">
           <button id="btn-demo-data" type="button" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 transition-all cursor-pointer">
             <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-600"></i>
-            <span class="hidden md:inline">Isi Data Demo</span>
+            <span class="hidden md:inline">Data Demo</span>
             <span class="md:hidden">Demo</span>
           </button>
 
@@ -179,26 +191,30 @@
     <div class="bg-slate-50 border-t border-slate-200 overflow-x-auto">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <nav class="flex space-x-1 sm:space-x-2 py-1.5 text-sm font-medium" aria-label="Tabs" id="main-tabs">
-          <button data-tab="tab-dashboard" class="tab-btn active-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-blue-700 bg-white shadow-xs border border-blue-200/60 font-semibold cursor-pointer">
+          <button data-tab="tab-dashboard" class="tab-btn active-tab flex items-center gap-2 px-3 py-2 rounded-lg text-blue-700 bg-white shadow-xs border border-blue-200/60 font-semibold cursor-pointer">
             <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-            <span>1. Data Siswa & Dashboard</span>
+            <span>1. Data Siswa</span>
           </button>
-          <button data-tab="tab-riasec" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer">
+          <button data-tab="tab-riasec" class="tab-btn flex items-center gap-2 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer">
             <i data-lucide="pie-chart" class="w-4 h-4"></i>
-            <span>2. Asesmen Minat RIASEC (18 Butir)</span>
+            <span>2. Asesmen RIASEC (18 Butir)</span>
           </button>
-          <button data-tab="tab-portofolio" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer">
+          <button data-tab="tab-portofolio" class="tab-btn flex items-center gap-2 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer">
             <i data-lucide="award" class="w-4 h-4"></i>
             <span>3. Brankas Prestasi</span>
             <span id="badge-portofolio-count" class="ml-1 px-1.5 py-0.5 text-[10px] rounded-full bg-slate-200 text-slate-700">0</span>
           </button>
-          <button data-tab="tab-konsultasi" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer">
+          <button data-tab="tab-konsultasi" class="tab-btn flex items-center gap-2 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer">
             <i data-lucide="user-check" class="w-4 h-4"></i>
             <span>4. Rekomendasi Guru BK</span>
           </button>
-          <button data-tab="tab-resume" class="tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer">
+          <button data-tab="tab-rekapitulasi" class="tab-btn flex items-center gap-2 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer">
+            <i data-lucide="database" class="w-4 h-4 text-emerald-600"></i>
+            <span>5. Rekapitulasi Cloud (Guru BK)</span>
+          </button>
+          <button data-tab="tab-resume" class="tab-btn flex items-center gap-2 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer">
             <i data-lucide="file-text" class="w-4 h-4"></i>
-            <span>5. Resume Siap Cetak (PDF)</span>
+            <span>6. Resume Siap Cetak (PDF)</span>
           </button>
         </nav>
       </div>
@@ -218,18 +234,21 @@
         <div class="relative z-10 max-w-2xl">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-semibold mb-3">
             <i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i>
-            Bimbingan Karier & Peminatan Terpadu
+            Bimbingan Karier & Peminatan Terpadu • Google Sheets Connected
           </div>
           <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Selamat Datang di Portal E-Portofolio Siswa</h1>
           <p class="mt-2 text-sm sm:text-base text-slate-300 leading-relaxed">
-            Platform konseling digital terpadu untuk memetakan tipe minat kepribadian karier (Holland RIASEC), merekam rekam jejak prestasi, dan merumuskan rekomendasi peminatan studi lanjut bersama Konselor BK.
+            Platform konseling digital terpadu untuk memetakan minat kepribadian (Holland RIASEC), mencatat rekam jejak portofolio, dan mengirim data langsung ke database Google Sheets Guru BK.
           </p>
           <div class="mt-4 flex flex-wrap gap-3">
             <button onclick="switchTab('tab-riasec')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-medium text-sm transition shadow-md shadow-blue-500/30 cursor-pointer">
               <i data-lucide="play-circle" class="w-4 h-4"></i> Mulai Asesmen 18 Butir
             </button>
+            <button onclick="switchTab('tab-rekapitulasi')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600/80 hover:bg-emerald-600 text-white font-medium text-sm border border-emerald-400/30 transition cursor-pointer">
+              <i data-lucide="table" class="w-4 h-4"></i> Rekapitulasi Data Siswa (Cloud)
+            </button>
             <button onclick="switchTab('tab-resume')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-sm border border-white/20 transition cursor-pointer">
-              <i data-lucide="file-check-2" class="w-4 h-4"></i> Pratinjau Portofolio Cetak
+              <i data-lucide="file-check-2" class="w-4 h-4"></i> Pratinjau Lembar Cetak
             </button>
           </div>
         </div>
@@ -271,11 +290,11 @@
 
         <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center gap-3.5">
           <div class="w-11 h-11 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+            <i data-lucide="cloud-check" class="w-5 h-5"></i>
           </div>
           <div>
-            <p class="text-xs text-slate-500 font-medium">Status BK</p>
-            <p id="stat-bk-status" class="text-xs font-bold text-slate-900">Belum Diverifikasi</p>
+            <p class="text-xs text-slate-500 font-medium">Status Cloud</p>
+            <p id="stat-cloud-status" class="text-xs font-bold text-emerald-600">Online & Siap</p>
           </div>
         </div>
       </div>
@@ -287,25 +306,25 @@
             <i data-lucide="user" class="w-5 h-5 text-blue-600"></i>
             <h2 class="text-base font-bold text-slate-900">Identitas Diri & Satuan Pendidikan Siswa</h2>
           </div>
-          <span class="text-xs text-slate-500">Data ini akan otomatis muncul pada Lembar Portofolio Resmi</span>
+          <span class="text-xs text-slate-500">NISN digunakan sebagai kunci utama rekaman cloud</span>
         </div>
 
         <div class="p-6">
           <form id="form-student-info" class="grid grid-cols-1 md:grid-cols-3 gap-5">
             <!-- Kolom 1 -->
             <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Nama Lengkap Siswa</label>
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Nama Lengkap Siswa *</label>
               <input type="text" id="student_name" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="Contoh: Muhammad Farhan Al-Ghifari">
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">NISN / Nomor Induk</label>
-              <input type="text" id="student_nisn" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="0067891234 / 2122101">
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">NISN / Nomor Induk *</label>
+              <input type="text" id="student_nisn" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition font-mono" placeholder="0067891234">
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Kelas & Peminatan</label>
-              <input type="text" id="student_class" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="XII MIPA 1 / F-12 Merdeka">
+              <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Kelas & Peminatan *</label>
+              <input type="text" id="student_class" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="XII MIPA 1">
             </div>
 
             <!-- Kolom 2 -->
@@ -366,7 +385,7 @@
             </div>
             <h2 class="text-xl font-bold text-slate-900">Inventori Minat Karier & Bakat Siswa (18 Butir)</h2>
             <p class="text-sm text-slate-500 mt-1">
-              Jawablah setiap butir pernyataan berdasarkan kecenderungan dan perasaan alamiahmu. Pilihlah:
+              Jawablah 18 butir pernyataan di bawah ini. Pilihlah:
               <span class="font-medium text-slate-700">0 (Tidak Suka)</span>, 
               <span class="font-medium text-slate-700">1 (Ragu-ragu / Netral)</span>, atau 
               <span class="font-medium text-slate-700">2 (Suka / Sangat Cocok)</span>.
@@ -378,8 +397,8 @@
               <p class="text-xs text-slate-500">Progres Pengisian</p>
               <p id="riasec-progress-text" class="text-sm font-bold text-blue-600">0 dari 18 butir</p>
             </div>
-            <button onclick="calculateRiasec()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs cursor-pointer">
-              Hitung Ulang
+            <button onclick="calculateRiasec()" class="px-3.5 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-xs font-semibold shadow-xs cursor-pointer">
+              Hitung Skor
             </button>
           </div>
         </div>
@@ -888,16 +907,23 @@
 
       </div>
 
-      <!-- HASIL ANALISIS RIASEC (RADAR CHART & HOLLAND CODE PROFILE) -->
+      <!-- HASIL ANALISIS RIASEC & TOMBOL KIRIM KE GOOGLE SHEETS -->
       <div id="riasec-results-card" class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8">
-        <div class="flex items-center justify-between pb-6 border-b border-slate-200">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200 gap-4">
           <div>
             <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Hasil Diagnosis Psikometri Minat</span>
             <h3 class="text-xl font-extrabold text-slate-900 mt-0.5">Analisis Profil Holland & Peta Radar RIASEC</h3>
           </div>
-          <div class="text-right">
-            <span class="text-xs text-slate-500">3 Huruf Dominan (Holland Code):</span>
-            <div id="result-holland-badge" class="text-2xl font-black text-indigo-700 tracking-wider">SEC</div>
+          <div class="flex items-center gap-3">
+            <div class="text-right">
+              <span class="text-xs text-slate-500">3 Huruf Dominan:</span>
+              <div id="result-holland-badge" class="text-2xl font-black text-indigo-700 tracking-wider">SEC</div>
+            </div>
+            <!-- TOMBOL UTAMA POST KE GOOGLE APPS SCRIPT -->
+            <button id="btn-submit-riasec-gas" onclick="kirimAsesmenKeGas()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs shadow-md shadow-emerald-500/20 transition-all cursor-pointer">
+              <i data-lucide="cloud-upload" class="w-4 h-4"></i>
+              <span>Simpan & Kirim Hasil Asesmen</span>
+            </button>
           </div>
         </div>
 
@@ -914,9 +940,9 @@
           <!-- Deskripsi & Rekomendasi Rumpun Karier -->
           <div class="lg:col-span-7 space-y-4">
             <div>
-              <h4 id="result-profile-title" class="text-base font-bold text-slate-900">Tipe Kepribadian Minat: Penolong & Pengelola (Social - Enterprising - Conventional)</h4>
+              <h4 id="result-profile-title" class="text-base font-bold text-slate-900">Tipe Kepribadian Minat</h4>
               <p id="result-profile-desc" class="text-sm text-slate-600 mt-1 leading-relaxed">
-                Anda memiliki dorongan tinggi dalam berinteraksi sosial, mengayomi orang lain, serta terampil mengoordinasikan tim kerja secara teratur dan sistematis.
+                Menghitung profil kepribadian minat dan kecenderungan karier siswa...
               </p>
             </div>
 
@@ -994,9 +1020,12 @@
               </div>
             </div>
 
-            <div class="pt-2 flex justify-end">
+            <div class="pt-2 flex justify-between items-center">
+              <span class="text-xs text-slate-500">
+                💡 <span class="font-medium">Tips:</span> Pastikan data aspirasi di tab Rekomendasi BK sudah terisi sebelum dikirim.
+              </span>
               <button onclick="switchTab('tab-portofolio')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-800 transition cursor-pointer">
-                Lanjut ke Modul Portofolio Prestasi <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                Lanjut ke Portofolio Prestasi <i data-lucide="arrow-right" class="w-4 h-4"></i>
               </button>
             </div>
           </div>
@@ -1019,7 +1048,7 @@
             <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
               <i data-lucide="folder-lock" class="w-5 h-5 text-amber-500"></i> Brankas Rekam Jejak & Portofolio Siswa
             </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Catat seluruh prestasi kurikuler, organisasi, sertifikasi, maupun portofolio karya kreatif.</p>
+            <p class="text-xs text-slate-500 mt-0.5">Catat seluruh prestasi, organisasi, sertifikasi, & karya portofolio. Terkirim ke Google Sheets.</p>
           </div>
           <span class="text-xs font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg self-start sm:self-auto">
             Total Karya: <strong id="portfolio-total-label" class="text-slate-800">0</strong> Capaian
@@ -1027,7 +1056,7 @@
         </div>
 
         <!-- Add Form -->
-        <form id="form-portfolio" class="mt-5 grid grid-cols-1 md:grid-cols-4 gap-4" onsubmit="event.preventDefault(); addPortfolioItem();">
+        <form id="form-portfolio" class="mt-5 grid grid-cols-1 md:grid-cols-4 gap-4" onsubmit="event.preventDefault(); simpanPortofolioHandler();">
           <div class="md:col-span-2">
             <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Capaian / Lomba / Proyek Karya *</label>
             <input type="text" id="port_title" required class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: Juara 2 Lomba Karya Tulis Ilmiah Remaja (LKIR)">
@@ -1065,8 +1094,10 @@
           </div>
 
           <div class="flex items-end">
-            <button type="submit" class="w-full px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-lg shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
-              <i data-lucide="plus-circle" class="w-4 h-4"></i> Tambah ke Brankas
+            <!-- Tombol Tambah & Kirim Portofolio ke Cloud -->
+            <button type="submit" id="btn-save-port-gas" class="w-full px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-lg shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+              <i data-lucide="cloud-upload" class="w-4 h-4"></i>
+              <span>Simpan Portofolio</span>
             </button>
           </div>
         </form>
@@ -1110,7 +1141,7 @@
         <div id="portfolio-empty-state" class="hidden p-8 text-center">
           <i data-lucide="inbox" class="w-10 h-10 mx-auto text-slate-300"></i>
           <p class="mt-2 text-sm text-slate-500 font-medium">Belum ada portofolio yang ditambahkan.</p>
-          <p class="text-xs text-slate-400">Gunakan form di atas atau klik "Isi Data Demo" untuk melihat contoh.</p>
+          <p class="text-xs text-slate-400">Gunakan form di atas atau klik "Data Demo" untuk melihat contoh.</p>
         </div>
       </div>
 
@@ -1153,7 +1184,7 @@
                 <i data-lucide="info" class="w-3.5 h-3.5 text-blue-600"></i> Panduan Penyelarasan:
               </span>
               <p class="text-slate-600 leading-relaxed">
-                Pilihan peminatan siswa akan dikomparasikan dengan nilai rapor, portofolio karya, dan hasil asesmen minat Holland RIASEC dalam sidang bimbingan konselor.
+                Pilihan peminatan ini juga otomatis terkirim ke Google Sheets saat Anda mengklik "Simpan & Kirim Hasil Asesmen" di Tab Asesmen RIASEC.
               </p>
             </div>
 
@@ -1225,7 +1256,93 @@
 
 
     <!-- ========================================== -->
-    <!-- TAB 5: RESUME KARIER SIAP CETAK (PDF VIEW) -->
+    <!-- TAB 5: REKAPITULASI DATABASE SISWA (CLOUD) -->
+    <!-- ========================================== -->
+    <div id="tab-rekapitulasi" class="tab-content hidden space-y-6">
+      
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between pb-5 border-b border-slate-200 gap-4">
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200 mb-1.5">
+              <i data-lucide="sheet" class="w-3.5 h-3.5"></i> Google Sheets Backend
+            </div>
+            <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+              Rekapitulasi Asesmen & Peminatan Siswa (Cloud)
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">
+              Data ditarik langsung secara real-time dari spreadsheet Google Apps Script. Guru BK dapat mencari, menyaring kelas, dan mencetak resume per siswa.
+            </p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button id="btn-refresh-rekap" onclick="muatDataRekap()" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-xs transition cursor-pointer">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5" id="icon-refresh-rekap"></i>
+              <span>Segarkan Data Cloud</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter & Search Toolbar -->
+        <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="relative sm:col-span-2">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+            <input type="text" id="rekap-search" oninput="filterRekapTable()" class="w-full pl-9 pr-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Cari berdasarkan Nama Siswa atau NISN...">
+          </div>
+
+          <div>
+            <select id="rekap-filter-class" onchange="filterRekapTable()" class="w-full px-3.5 py-2 text-sm rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+              <option value="all">Semua Kelas</option>
+              <!-- Diisi otomatis via JS berdasarkan kelas yang ada -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Summary Counter & Status -->
+        <div class="mt-4 flex items-center justify-between text-xs text-slate-500 px-1">
+          <span>Menampilkan <strong id="rekap-count-shown" class="text-slate-800">0</strong> dari <strong id="rekap-count-total" class="text-slate-800">0</strong> data siswa di Google Sheets</span>
+          <span id="rekap-status-text" class="text-slate-400">Klik "Segarkan Data Cloud" untuk menarik data terbaru.</span>
+        </div>
+
+        <!-- Tabel Rekapitulasi Responsif -->
+        <div class="mt-3 overflow-x-auto rounded-xl border border-slate-200">
+          <table class="w-full text-left text-sm text-slate-600">
+            <thead class="bg-slate-50 text-xs text-slate-600 uppercase border-b border-slate-200">
+              <tr>
+                <th class="px-4 py-3 text-center">No</th>
+                <th class="px-4 py-3">Waktu Input</th>
+                <th class="px-4 py-3">NISN</th>
+                <th class="px-4 py-3">Nama Siswa</th>
+                <th class="px-4 py-3">Kelas</th>
+                <th class="px-4 py-3 text-center">Kode Holland</th>
+                <th class="px-4 py-3">Target Pilihan 1 & 2</th>
+                <th class="px-4 py-3 text-center">Aksi Guru BK</th>
+              </tr>
+            </thead>
+            <tbody id="rekap-table-body" class="divide-y divide-slate-100">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty & Loading States -->
+        <div id="rekap-loading-state" class="hidden p-10 text-center">
+          <div class="w-8 h-8 mx-auto border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p class="mt-3 text-sm text-slate-600 font-semibold">Mengambil data rekapitulasi dari Google Sheets...</p>
+          <p class="text-xs text-slate-400">Menghubungkan ke endpoint Google Apps Script</p>
+        </div>
+
+        <div id="rekap-empty-state" class="hidden p-10 text-center">
+          <i data-lucide="file-question" class="w-10 h-10 mx-auto text-slate-300"></i>
+          <p class="mt-2 text-sm text-slate-600 font-semibold">Tidak ada data siswa ditemukan.</p>
+          <p class="text-xs text-slate-400">Coba ubah kata kunci pencarian atau klik tombol "Segarkan Data Cloud".</p>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- TAB 6: RESUME KARIER SIAP CETAK (PDF VIEW) -->
     <!-- ========================================== -->
     <div id="tab-resume" class="tab-content hidden space-y-6">
       
@@ -1251,7 +1368,7 @@
         
         <!-- KOP SURAT DINAS RESMI -->
         <div class="border-b-2 border-slate-900 pb-3 text-center relative flex items-center justify-between">
-          <!-- Logo Sekolah / Tut Wuri Handayani Placeholder -->
+          <!-- Logo Sekolah -->
           <div class="w-16 h-16 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center shrink-0">
             <i data-lucide="graduation-cap" class="w-9 h-9 text-blue-900"></i>
           </div>
@@ -1445,8 +1562,10 @@
         <i data-lucide="shield-check" class="w-4 h-4 text-blue-600"></i>
         <span>SIM-BK: Sistem Informasi Manajemen Bimbingan Konseling Sekolah Berstandar Nasional</span>
       </div>
-      <div>
-        <span>Penyimpanan Lokal Aktif (Browser LocalStorage) • Siap Dijalankan Langsung</span>
+      <div class="flex items-center gap-3">
+        <span class="inline-flex items-center gap-1 text-emerald-600 font-semibold">
+          <i data-lucide="link" class="w-3.5 h-3.5"></i> Google Apps Script Live Backend
+        </span>
       </div>
     </div>
   </footer>
@@ -1454,11 +1573,12 @@
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- JAVASCRIPT LOGIC LENGKAP -->
+  <!-- JAVASCRIPT LOGIC LENGKAP DENGAN INTEGRASI GOOGLE APPS SCRIPT -->
   <script>
     // ==============================================================
-    // KONSTANTA & STRUKTUR DATA UTAMA SIM-BK
+    // 1. ENDPOINT GLOBAL GOOGLE APPS SCRIPT (GAS)
     // ==============================================================
+    const GAS_API_URL = "https://script.google.com/macros/s/AKfycbw5ZTryTHPYyqFwkMSMTDmyvz4Q-T_TsWWJYrt0pgDexzZCoJeet0xoG6N6cze7LxfflA/exec";
     const STORAGE_KEY = 'SIM_BK_DATA_V2';
 
     // Model Referensi Holland RIASEC
@@ -1507,12 +1627,12 @@
       }
     };
 
-    // Data Awal Standar (Demo Data Realistis)
+    // Data Awal Standar
     const DEFAULT_DATA = {
       student: {
         name: 'Muhammad Farhan Al-Ghifari',
-        nisn: '0067891234 / 2122101',
-        class: 'XII MIPA 1 (Peminatan Sains & Teknologi)',
+        nisn: '0067891234',
+        class: 'XII MIPA 1',
         school: 'SMA Negeri 1 Prestasi Bangsa',
         schoolAddress: 'Jl. Pemuda No. 45, Kota Yogyakarta, DI Yogyakarta',
         schoolYear: '2025/2026',
@@ -1570,7 +1690,7 @@
       },
       counselor: {
         status: 'Sangat Direkomendasikan (Sesuai Minat & Bakat)',
-        notes: 'Hasil asesmen minat RIASEC menunjukkan kode dominan IEC/ISE yang sangat selaras dengan minat rekayasa teknologi dan komputasi analitis. Nilai rata-rata rapor eksak (Matematika & Fisika: 91.2) serta portofolio karya coding mandiri sangat mendukung daya saing siswa pada seleksi perguruan tinggi negeri.',
+        notes: 'Hasil asesmen minat RIASEC menunjukkan kode dominan IEC/ISE yang sangat selaras dengan minat rekayasa teknologi dan komputasi analitis. Nilai rata-rata rapor eksak serta portofolio karya coding mandiri sangat mendukung daya saing siswa pada seleksi perguruan tinggi negeri.',
         date: '2026-10-16',
         name: 'Dra. Hj. Nurul Hidayati, M.Pd., Kons.',
         nip: '19780415 200501 2 004'
@@ -1579,6 +1699,7 @@
 
     // State Aplikasi
     let appData = {};
+    let rekapCloudData = []; // Data dari GAS ?tipe=getAsesmen
     let radarChartInstance = null;
     let radarPrintChartInstance = null;
     let activePortfolioFilter = 'all';
@@ -1590,7 +1711,7 @@
       loadData();
       renderAllTabs();
       setupEventListeners();
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
     }
 
     function loadData() {
@@ -1610,14 +1731,14 @@
     function saveDataToStorage(showToast = true) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
       if (showToast) {
-        showNotification('Data berhasil disimpan ke sistem penyimpanan lokal!', 'success');
+        showNotification('Data tersimpan secara lokal di browser!', 'success');
       }
       updateDashboardStats();
       updatePrintView();
     }
 
     function resetDemoData() {
-      if (confirm('Apakah Anda yakin ingin memuat ulang Data Demo realistis? Data yang sedang diedit akan digantikan.')) {
+      if (confirm('Apakah Anda yakin ingin memuat ulang Data Demo realistis? Data yang sedang diedit akan diperbarui.')) {
         appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
         saveDataToStorage(false);
         renderAllTabs();
@@ -1626,10 +1747,10 @@
     }
 
     // ==============================================================
-    // TAB MANAGEMENT
+    // TAB NAVIGATION
     // ==============================================================
     function switchTab(tabId) {
-      const tabs = ['tab-dashboard', 'tab-riasec', 'tab-portofolio', 'tab-konsultasi', 'tab-resume'];
+      const tabs = ['tab-dashboard', 'tab-riasec', 'tab-portofolio', 'tab-konsultasi', 'tab-rekapitulasi', 'tab-resume'];
       tabs.forEach(id => {
         const el = document.getElementById(id);
         if (el) {
@@ -1643,27 +1764,430 @@
         }
       });
 
-      // Update styling tab buttons
+      // Update active state di nav bar
       const navButtons = document.querySelectorAll('#main-tabs .tab-btn');
       navButtons.forEach(btn => {
         if (btn.getAttribute('data-tab') === tabId) {
-          btn.className = 'tab-btn active-tab flex items-center gap-2 px-3.5 py-2 rounded-lg text-blue-700 bg-white shadow-xs border border-blue-200/60 font-semibold cursor-pointer';
+          btn.className = 'tab-btn active-tab flex items-center gap-2 px-3 py-2 rounded-lg text-blue-700 bg-white shadow-xs border border-blue-200/60 font-semibold cursor-pointer';
         } else {
-          btn.className = 'tab-btn flex items-center gap-2 px-3.5 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer';
+          btn.className = 'tab-btn flex items-center gap-2 px-3 py-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-white/60 transition cursor-pointer';
         }
       });
 
-      // Re-render radar chart jika membuka tab RIASEC atau Resume
       if (tabId === 'tab-riasec') {
         setTimeout(renderRadarChart, 100);
+      } else if (tabId === 'tab-rekapitulasi') {
+        if (rekapCloudData.length === 0) {
+          muatDataRekap();
+        }
       } else if (tabId === 'tab-resume') {
         updatePrintView();
         setTimeout(renderPrintRadarChart, 100);
       }
+
       if (window.lucide) {
         lucide.createIcons();
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==============================================================
+    // 2. PENGIRIMAN DATA HASIL ASESMEN RIASEC KE GOOGLE APPS SCRIPT (POST)
+    // ==============================================================
+    async function kirimAsesmenKeGas() {
+      // Pastikan skor dihitung dulu
+      calculateRiasec(false);
+
+      const s = appData.student || {};
+      const asp = appData.aspiration || {};
+      const scores = appData.riasecScores || { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+      const hollandCode = appData.hollandCode || 'RIA';
+
+      // Validasi kelengkapan data dasar
+      if (!s.nisn || !s.name) {
+        showNotification('Mohon lengkapi Nama Siswa dan NISN di Tab 1 (Data Siswa) terlebih dahulu!', 'warning');
+        switchTab('tab-dashboard');
+        return;
+      }
+
+      const payload = {
+        action: "simpanAsesmen",
+        nisn: String(s.nisn || "").trim(),
+        nama: String(s.name || "").trim(),
+        kelas: String(s.class || "").trim(),
+        skorR: Number(scores.R || 0),
+        skorI: Number(scores.I || 0),
+        skorA: Number(scores.A || 0),
+        skorS: Number(scores.S || 0),
+        skorE: Number(scores.E || 0),
+        skorC: Number(scores.C || 0),
+        kodeHolland: String(hollandCode),
+        pilihan1: String(asp.choice1 || "").trim(),
+        pilihan2: String(asp.choice2 || "").trim(),
+        citaCita: String(asp.careerDream || "").trim()
+      };
+
+      const btn = document.getElementById('btn-submit-riasec-gas');
+      const originalText = btn ? btn.innerHTML : '';
+
+      // Set Visual State: Loading Spinner
+      if (btn) {
+        btn.disabled = true;
+        btn.classList.add('opacity-80', 'cursor-not-allowed');
+        btn.innerHTML = `
+          <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin-fast"></div>
+          <span>Menyimpan ke Database...</span>
+        `;
+      }
+
+      try {
+        // Simpan juga salinan aktif ke localStorage
+        saveDataToStorage(false);
+
+        // Fetch POST dengan header text/plain agar tidak memicu CORS Preflight di GAS
+        const response = await fetch(GAS_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const resultText = await response.text();
+        let resultJson = null;
+        try {
+          resultJson = JSON.parse(resultText);
+        } catch (e) {
+          resultJson = { raw: resultText };
+        }
+
+        showNotification('Data Asesmen RIASEC berhasil dikirim & disimpan ke Google Sheets!', 'success');
+        
+        // Tandai status cloud di dashboard
+        const statCloud = document.getElementById('stat-cloud-status');
+        if (statCloud) statCloud.innerText = 'Tersinkronisasi';
+
+      } catch (err) {
+        console.error('Error kirim asesmen ke Google Apps Script:', err);
+        showNotification('Gagal terhubung ke Google Sheets: ' + (err.message || 'Periksa koneksi internet'), 'warning');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.classList.remove('opacity-80', 'cursor-not-allowed');
+          btn.innerHTML = originalText;
+          if (window.lucide) lucide.createIcons();
+        }
+      }
+    }
+
+    // ==============================================================
+    // 3. PENGIRIMAN DATA PORTOFOLIO / PRESTASI KE GOOGLE APPS SCRIPT (POST)
+    // ==============================================================
+    async function simpanPortofolioHandler() {
+      const s = appData.student || {};
+      const title = document.getElementById('port_title').value.trim();
+      const category = document.getElementById('port_category').value;
+      const level = document.getElementById('port_level').value;
+      const year = document.getElementById('port_year').value.trim();
+      const url = document.getElementById('port_url').value.trim();
+
+      if (!title) {
+        showNotification('Nama capaian/prestasi wajib diisi!', 'warning');
+        return;
+      }
+
+      const nisn = String(s.nisn || "").trim();
+      if (!nisn) {
+        showNotification('NISN belum diisi di Tab 1 (Data Siswa). Lengkapi NISN agar terhubung dengan Google Sheets.', 'warning');
+      }
+
+      const newItem = {
+        id: 'port-' + Date.now(),
+        title,
+        category,
+        level,
+        year: parseInt(year, 10) || new Date().getFullYear(),
+        url,
+        verified: true
+      };
+
+      // Simpan ke array portofolio lokal
+      if (!appData.portfolio) appData.portfolio = [];
+      appData.portfolio.unshift(newItem);
+      saveDataToStorage(false);
+      renderPortfolioTable();
+
+      // Reset input form
+      document.getElementById('port_title').value = '';
+      document.getElementById('port_url').value = '';
+
+      // Kirim POST ke GAS
+      const payload = {
+        action: "simpanPortofolio",
+        nisn: nisn || "0000000000",
+        namaKegiatan: title,
+        kategori: category,
+        tingkat: level,
+        tahun: String(year),
+        linkBukti: url
+      };
+
+      const btn = document.getElementById('btn-save-port-gas');
+      const originalBtnHtml = btn ? btn.innerHTML : '';
+
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `
+          <div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin-fast"></div>
+          <span>Menyimpan ke Cloud...</span>
+        `;
+      }
+
+      try {
+        await fetch(GAS_API_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        showNotification('Portofolio berhasil ditambahkan & dikirim ke Google Sheets!', 'success');
+      } catch (err) {
+        console.error('Error simpan portofolio ke GAS:', err);
+        showNotification('Portofolio disimpan secara lokal (Gagal terhubung ke Google Sheets)', 'warning');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalBtnHtml;
+          if (window.lucide) lucide.createIcons();
+        }
+      }
+    }
+
+    // ==============================================================
+    // 4. PENGAMBILAN DATA REKAPITULASI UNTUK GURU BK (GET)
+    // ==============================================================
+    async function muatDataRekap() {
+      const tbody = document.getElementById('rekap-table-body');
+      const loadingState = document.getElementById('rekap-loading-state');
+      const emptyState = document.getElementById('rekap-empty-state');
+      const statusText = document.getElementById('rekap-status-text');
+      const refreshIcon = document.getElementById('icon-refresh-rekap');
+
+      if (refreshIcon) refreshIcon.classList.add('animate-spin');
+      if (tbody) tbody.innerHTML = '';
+      if (loadingState) loadingState.classList.remove('hidden');
+      if (emptyState) emptyState.classList.add('hidden');
+      if (statusText) statusText.innerText = 'Mengambil data dari Google Sheets...';
+
+      try {
+        const response = await fetch(`${GAS_API_URL}?tipe=getAsesmen`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        let items = [];
+
+        if (Array.isArray(data)) {
+          items = data;
+        } else if (data && Array.isArray(data.data)) {
+          items = data.data;
+        } else if (data && typeof data === 'object') {
+          // Jika dibungkus key lain
+          const possibleArray = Object.values(data).find(v => Array.isArray(v));
+          items = possibleArray || [];
+        }
+
+        rekapCloudData = items;
+
+        if (statusText) {
+          statusText.innerText = `Terakhir diperbarui: ${new Date().toLocaleTimeString('id-ID')} WIB`;
+        }
+
+        populateClassFilterOptions();
+        renderRekapTable(rekapCloudData);
+
+      } catch (err) {
+        console.error('Error saat muatDataRekap dari GAS:', err);
+        if (statusText) {
+          statusText.innerText = 'Gagal memuat dari Google Sheets. Menampilkan data lokal cadangan.';
+        }
+        showNotification('Gagal memuat data cloud: ' + (err.message || 'Periksa jaringan internet'), 'warning');
+
+        // Fallback: Tampilkan minimal data siswa aktif saat ini jika cloud gagal
+        if (rekapCloudData.length === 0 && appData.student && appData.student.name) {
+          const fallbackItem = {
+            timestamp: new Date().toLocaleString('id-ID'),
+            nisn: appData.student.nisn || '-',
+            nama: appData.student.name || '-',
+            kelas: appData.student.class || '-',
+            kodeHolland: appData.hollandCode || 'RIA',
+            skorR: (appData.riasecScores && appData.riasecScores.R) || 0,
+            skorI: (appData.riasecScores && appData.riasecScores.I) || 0,
+            skorA: (appData.riasecScores && appData.riasecScores.A) || 0,
+            skorS: (appData.riasecScores && appData.riasecScores.S) || 0,
+            skorE: (appData.riasecScores && appData.riasecScores.E) || 0,
+            skorC: (appData.riasecScores && appData.riasecScores.C) || 0,
+            pilihan1: (appData.aspiration && appData.aspiration.choice1) || '-',
+            pilihan2: (appData.aspiration && appData.aspiration.choice2) || '-',
+            citaCita: (appData.aspiration && appData.aspiration.careerDream) || '-'
+          };
+          rekapCloudData = [fallbackItem];
+          populateClassFilterOptions();
+          renderRekapTable(rekapCloudData);
+        }
+      } finally {
+        if (refreshIcon) refreshIcon.classList.remove('animate-spin');
+        if (loadingState) loadingState.classList.add('hidden');
+      }
+    }
+
+    function populateClassFilterOptions() {
+      const select = document.getElementById('rekap-filter-class');
+      if (!select) return;
+
+      const classes = new Set();
+      rekapCloudData.forEach(item => {
+        const k = item.kelas || item.Kelas;
+        if (k && String(k).trim()) classes.add(String(k).trim());
+      });
+
+      const currentVal = select.value;
+      select.innerHTML = '<option value="all">Semua Kelas</option>';
+      Array.from(classes).sort().forEach(cls => {
+        const opt = document.createElement('option');
+        opt.value = cls;
+        opt.textContent = `Kelas ${cls}`;
+        select.appendChild(opt);
+      });
+      select.value = currentVal;
+    }
+
+    function filterRekapTable() {
+      const query = (document.getElementById('rekap-search')?.value || '').toLowerCase().trim();
+      const filterClass = document.getElementById('rekap-filter-class')?.value || 'all';
+
+      const filtered = rekapCloudData.filter(item => {
+        const nama = String(item.nama || item.Nama || '').toLowerCase();
+        const nisn = String(item.nisn || item.NISN || '').toLowerCase();
+        const kelas = String(item.kelas || item.Kelas || '').trim();
+
+        const matchQuery = !query || nama.includes(query) || nisn.includes(query);
+        const matchClass = filterClass === 'all' || kelas === filterClass;
+
+        return matchQuery && matchClass;
+      });
+
+      renderRekapTable(filtered);
+    }
+
+    function renderRekapTable(list) {
+      const tbody = document.getElementById('rekap-table-body');
+      const emptyState = document.getElementById('rekap-empty-state');
+      const countShown = document.getElementById('rekap-count-shown');
+      const countTotal = document.getElementById('rekap-count-total');
+
+      if (countShown) countShown.innerText = list.length;
+      if (countTotal) countTotal.innerText = rekapCloudData.length;
+
+      if (!list || list.length === 0) {
+        if (tbody) tbody.innerHTML = '';
+        if (emptyState) emptyState.classList.remove('hidden');
+        return;
+      }
+
+      if (emptyState) emptyState.classList.add('hidden');
+
+      if (tbody) {
+        tbody.innerHTML = list.map((item, index) => {
+          const timestamp = item.timestamp || item.Timestamp || item.waktu || '-';
+          const nisn = item.nisn || item.NISN || '-';
+          const nama = item.nama || item.Nama || 'Siswa';
+          const kelas = item.kelas || item.Kelas || '-';
+          const holland = item.kodeHolland || item.KodeHolland || item.holland || '-';
+          const p1 = item.pilihan1 || item.Pilihan1 || '-';
+          const p2 = item.pilihan2 || item.Pilihan2 || '-';
+          const cita = item.citaCita || item.CitaCita || '-';
+
+          // Badge warna Holland Code
+          let badgeColor = 'bg-blue-100 text-blue-800 border-blue-200';
+          if (holland.includes('S')) badgeColor = 'bg-rose-100 text-rose-800 border-rose-200';
+          else if (holland.includes('I')) badgeColor = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+          else if (holland.includes('A')) badgeColor = 'bg-purple-100 text-purple-800 border-purple-200';
+          else if (holland.includes('E')) badgeColor = 'bg-amber-100 text-amber-800 border-amber-200';
+
+          return `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="px-4 py-3 text-center text-xs font-semibold text-slate-400">${index + 1}</td>
+              <td class="px-4 py-3 text-xs text-slate-500 whitespace-nowrap">${escapeHtml(String(timestamp).slice(0, 19))}</td>
+              <td class="px-4 py-3 text-xs font-mono font-bold text-slate-800">${escapeHtml(String(nisn))}</td>
+              <td class="px-4 py-3 font-semibold text-slate-900">${escapeHtml(String(nama))}</td>
+              <td class="px-4 py-3 text-xs font-medium text-slate-700">${escapeHtml(String(kelas))}</td>
+              <td class="px-4 py-3 text-center">
+                <span class="inline-block px-2.5 py-1 rounded-md text-xs font-black tracking-wider border ${badgeColor}">
+                  ${escapeHtml(String(holland))}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-xs text-slate-600 max-w-xs truncate" title="P1: ${escapeHtml(String(p1))} | P2: ${escapeHtml(String(p2))}">
+                <p class="font-medium text-slate-800 truncate">1. ${escapeHtml(String(p1))}</p>
+                <p class="text-slate-500 truncate">2. ${escapeHtml(String(p2))}</p>
+              </td>
+              <td class="px-4 py-3 text-center whitespace-nowrap">
+                <button onclick="lihatDetailSiswaDariRekap('${escapeHtml(String(nisn))}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 transition cursor-pointer">
+                  <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                  <span>Detail & Cetak</span>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // Aksi "Lihat Detail / Cetak" dari data rekap Google Sheets
+    function lihatDetailSiswaDariRekap(nisnTarget) {
+      const found = rekapCloudData.find(item => String(item.nisn || item.NISN) === String(nisnTarget));
+      if (!found) {
+        showNotification('Data detail siswa tidak ditemukan', 'warning');
+        return;
+      }
+
+      // Terapkan ke state aktif
+      appData.student = appData.student || {};
+      appData.student.name = found.nama || found.Nama || appData.student.name;
+      appData.student.nisn = found.nisn || found.NISN || appData.student.nisn;
+      appData.student.class = found.kelas || found.Kelas || appData.student.class;
+
+      if (found.kodeHolland || found.KodeHolland) {
+        appData.hollandCode = found.kodeHolland || found.KodeHolland;
+      }
+
+      // Skor RIASEC
+      appData.riasecScores = {
+        R: Number(found.skorR || 0),
+        I: Number(found.skorI || 0),
+        A: Number(found.skorA || 0),
+        S: Number(found.skorS || 0),
+        E: Number(found.skorE || 0),
+        C: Number(found.skorC || 0)
+      };
+
+      // Aspirasi
+      appData.aspiration = appData.aspiration || {};
+      appData.aspiration.choice1 = found.pilihan1 || found.Pilihan1 || appData.aspiration.choice1;
+      appData.aspiration.choice2 = found.pilihan2 || found.Pilihan2 || appData.aspiration.choice2;
+      appData.aspiration.careerDream = found.citaCita || found.CitaCita || appData.aspiration.careerDream;
+
+      saveDataToStorage(false);
+      renderAllTabs();
+
+      // Beralih ke tab resume cetak
+      switchTab('tab-resume');
+      showNotification(`Memuat data profil ${appData.student.name} ke Lembar Cetak`, 'success');
     }
 
     // ==============================================================
@@ -1729,14 +2253,13 @@
           appData.answers[`q${i}`] = parseInt(selected.value, 10);
         }
       }
-      calculateRiasec(true);
+      calculateRiasec(false);
       saveDataToStorage(false);
     }
 
     function calculateRiasec(showFeedback = true) {
       const ans = appData.answers || {};
       
-      // Hitung per tipe: R (q1..q3), I (q4..q6), A (q7..q9), S (q10..q12), E (q13..q15), C (q16..q18)
       const scores = {
         R: (ans.q1 || 0) + (ans.q2 || 0) + (ans.q3 || 0),
         I: (ans.q4 || 0) + (ans.q5 || 0) + (ans.q6 || 0),
@@ -1746,7 +2269,6 @@
         C: (ans.q16 || 0) + (ans.q17 || 0) + (ans.q18 || 0)
       };
 
-      // Hitung butir terjawab
       let answeredCount = 0;
       for (let i = 1; i <= 18; i++) {
         if (ans[`q${i}`] !== undefined) answeredCount++;
@@ -1754,7 +2276,6 @@
       const progressText = document.getElementById('riasec-progress-text');
       if (progressText) progressText.innerText = `${answeredCount} dari 18 butir`;
 
-      // Update badge skor tiap dimensi
       ['R', 'I', 'A', 'S', 'E', 'C'].forEach(dim => {
         const val = scores[dim];
         const badge = document.getElementById(`score-badge-${dim}`);
@@ -1766,13 +2287,11 @@
         if (barVal) barVal.style.width = `${(val / 6) * 100}%`;
       });
 
-      // Urutkan untuk menghasilkan 3 Huruf Holland Code Dominan
       const sortedDims = Object.keys(scores).sort((a, b) => scores[b] - scores[a]);
       const hollandCode = sortedDims.slice(0, 3).join('');
       appData.hollandCode = hollandCode;
       appData.riasecScores = scores;
 
-      // Update tampilan deskripsi hasil asesmen
       const resultBadge = document.getElementById('result-holland-badge');
       if (resultBadge) resultBadge.innerText = hollandCode;
 
@@ -1780,15 +2299,15 @@
       const profileDesc = document.getElementById('result-profile-desc');
       const careerSuggestionsEl = document.getElementById('result-career-suggestions');
 
-      const top1 = RIASEC_PROFILES[sortedDims[0]];
-      const top2 = RIASEC_PROFILES[sortedDims[1]];
-      const top3 = RIASEC_PROFILES[sortedDims[2]];
+      const top1 = RIASEC_PROFILES[sortedDims[0]] || RIASEC_PROFILES['R'];
+      const top2 = RIASEC_PROFILES[sortedDims[1]] || RIASEC_PROFILES['I'];
+      const top3 = RIASEC_PROFILES[sortedDims[2]] || RIASEC_PROFILES['A'];
 
       if (profileTitle) {
         profileTitle.innerText = `Tipe Profil Dominan: ${top1.name} - ${top2.name} - ${top3.name} (${hollandCode})`;
       }
       if (profileDesc) {
-        profileDesc.innerText = `Karakteristik kepribadian Anda dipimpin oleh dimensi ${top1.name} (${top1.title.toLowerCase()}) yang didukung oleh sifat ${top2.name} dan ${top3.name}. ${top1.desc} ${top2.desc}`;
+        profileDesc.innerText = `Karakteristik minat Anda dipimpin oleh dimensi ${top1.name} (${top1.title.toLowerCase()}) yang disokong oleh dimensi ${top2.name} dan ${top3.name}. ${top1.desc} ${top2.desc}`;
       }
 
       if (careerSuggestionsEl) {
@@ -1990,44 +2509,11 @@
         }).join('');
       }
 
-      lucide.createIcons();
-    }
-
-    function addPortfolioItem() {
-      const title = document.getElementById('port_title').value.trim();
-      const category = document.getElementById('port_category').value;
-      const level = document.getElementById('port_level').value;
-      const year = parseInt(document.getElementById('port_year').value, 10) || new Date().getFullYear();
-      const url = document.getElementById('port_url').value.trim();
-
-      if (!title) {
-        showNotification('Nama capaian/prestasi wajib diisi!', 'warning');
-        return;
-      }
-
-      const newItem = {
-        id: 'port-' + Date.now(),
-        title,
-        category,
-        level,
-        year,
-        url,
-        verified: true
-      };
-
-      if (!appData.portfolio) appData.portfolio = [];
-      appData.portfolio.unshift(newItem);
-
-      // Reset form
-      document.getElementById('port_title').value = '';
-      document.getElementById('port_url').value = '';
-
-      saveDataToStorage(true);
-      renderPortfolioTable();
+      if (window.lucide) lucide.createIcons();
     }
 
     function deletePortfolioItem(id) {
-      if (confirm('Hapus berkas portofolio ini dari brankas?')) {
+      if (confirm('Hapus berkas portofolio ini dari brankas lokal?')) {
         appData.portfolio = (appData.portfolio || []).filter(item => item.id !== id);
         saveDataToStorage(true);
         renderPortfolioTable();
@@ -2089,17 +2575,14 @@
       const hollandCode = appData.hollandCode || '-';
       const portCount = (appData.portfolio || []).length;
       const gpa = (appData.student && appData.student.gpa) ? Number(appData.student.gpa).toFixed(2) : '0.00';
-      const bkStatus = (appData.counselor && appData.counselor.status) ? appData.counselor.status.split(' ')[0] : 'Aktif';
 
       const statCode = document.getElementById('stat-holland-code');
       const statPort = document.getElementById('stat-portfolio-count');
       const statGpa = document.getElementById('stat-gpa');
-      const statBk = document.getElementById('stat-bk-status');
 
       if (statCode) statCode.innerText = hollandCode;
       if (statPort) statPort.innerText = `${portCount} Berkas`;
       if (statGpa) statGpa.innerText = gpa;
-      if (statBk) statBk.innerText = bkStatus;
     }
 
     function updatePrintView() {
@@ -2195,14 +2678,13 @@
 
     function escapeHtml(str) {
       if (!str) return '';
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
     // ==============================================================
-    // FITUR EKSPOR HTML TUNGGAL (SINGLE FILE EXPORT)
+    // EKSPOR FILE HTML TUNGGAL
     // ==============================================================
     function exportSingleFileHtml() {
-      // Dapatkan seluruh isi dokumen saat ini
       const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
       const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
@@ -2220,7 +2702,6 @@
     // EVENT LISTENERS & NOTIFIKASI TOAST
     // ==============================================================
     function setupEventListeners() {
-      // Tombol Tab Navigasi
       const tabBtns = document.querySelectorAll('#main-tabs .tab-btn');
       tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -2229,13 +2710,12 @@
         });
       });
 
-      // Quick Action Buttons Header
       document.getElementById('btn-demo-data')?.addEventListener('click', resetDemoData);
       document.getElementById('btn-save-all')?.addEventListener('click', () => {
         saveStudentInfo();
         saveAspiration();
         saveCounselorNotes();
-        showNotification('Semua data portofolio dan bimbingan tersimpan!', 'success');
+        showNotification('Semua data berhasil disimpan secara lokal!', 'success');
       });
       document.getElementById('btn-export-file')?.addEventListener('click', exportSingleFileHtml);
       document.getElementById('btn-print-top')?.addEventListener('click', () => {
@@ -2267,14 +2747,12 @@
       `;
 
       container.appendChild(toast);
-      lucide.createIcons();
+      if (window.lucide) lucide.createIcons();
 
-      // Animasi masuk
       setTimeout(() => {
         toast.classList.remove('opacity-0', 'translate-y-2');
       }, 10);
 
-      // Otomatis hilang setelah 3.5 detik
       setTimeout(() => {
         toast.classList.add('opacity-0', 'translate-y-2');
         setTimeout(() => {
@@ -2283,7 +2761,6 @@
       }, 3500);
     }
 
-    // Jalankan aplikasi saat DOM siap
     document.addEventListener('DOMContentLoaded', () => {
       initApp();
     });
